@@ -3,79 +3,10 @@ html, body {
     background-color : #e7e7e7;
 }
 
-#root, #app, #log {
+#root, #app {
     height : 100%;
 }
 
-#log {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    text-align : center;
-}
-
-#log > div {
-    padding: 25px 40px;
-    width: 500px;
-}
-
-#log h1 {
-    font-size : 24px;
-    margin : 0 auto 15px auto;
-}
-
-#log_actions {
-    margin-top : 15px;
-    text-align : right;
-}
-
-
-#log__disableTime {
-    margin-right : 15px;
-    color : grey;
-}
-
-
 .appbar-root {
     position : fixed !important;
-}
-
-
-
-
-#portfolio_list > main {
-    display : flex;
-    flex-wrap: wrap;
-    align-items: center;
-    margin-top : 60px;
-    position: absolute;
-}
-
-#portfolio_list .card {
-    flex : 0 1 250px;
-    margin : 20px;
-}
-#portfolio_list .card h1 {
-    font-size : 18px;
-    text-align : center;
-    margin-top : 0;
-}
-#portfolio_list .card ul {
-    list-style-type : none;
-    margin : 0;
-    padding : 0;
-    font-size : 13px;
-    font-family: Arial, serif;
-}
-
-.card_media {
-    height : 150px;
-}
-
-.card_action_area {
-    width : 100%;
-}
-
-.card label {
-    font-weight : bold;
 }

@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import Card from '@material-ui/core/Card';
 import CardContent from '@material-ui/core/CardContent';
 import CardMedia from '@material-ui/core/CardMedia';
+import '../style/PeopleCard.css';
 
 const PeopleCard = ({ people }) => {
     return (

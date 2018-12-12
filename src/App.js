@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import './App.css';
-import Portfolio from "./components/portfolio/Portfolio";
-import LoginPage from "./components/loginPage/LoginPage";
+import Portfolio from "./pages/portfolio/Portfolio";
+import LoginPage from "./pages/loginPage/LoginPage";
 
 class App extends Component {
 

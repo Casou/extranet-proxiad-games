@@ -5,7 +5,8 @@ import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
 import { withStyles } from '@material-ui/core/styles';
 import { VILLES } from "../../common/common.js";
-import PeopleCard from "./PeopleCard";
+import PeopleCard from "./components/PeopleCard";
+import './style/Portfolio.css';
 
 const styles = theme => ({
     root: {

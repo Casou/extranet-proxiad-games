@@ -1,0 +1,11 @@
+.card_media {
+    height : 150px;
+}
+
+.card_action_area {
+    width : 100%;
+}
+
+.card label {
+    font-weight : bold;
+}

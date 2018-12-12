@@ -1,0 +1,28 @@
+#log {
+    height : 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align : center;
+}
+
+#log > div {
+    padding: 25px 40px;
+    width: 500px;
+}
+
+#log h1 {
+    font-size : 24px;
+    margin : 0 auto 15px auto;
+}
+
+#log_actions {
+    margin-top : 15px;
+    text-align : right;
+}
+
+
+#log__disableTime {
+    margin-right : 15px;
+    color : grey;
+}
