@@ -108,17 +108,17 @@ class LoginPage extends Component {
                         value={passwordValue}
                         onChange={this._handleTextFieldChange}
                         onKeyPress={this._handleTextFieldKeyPress}
-                        disabled={ disableTime }
+                        disabled={ !!disableTime }
                         fullWidth
                     />
                     <div id={"log_actions"}>
                         {
-                            disableTime && <span id={"log__disableTime"}>{ disableTime }</span>
+                            disableTime && <span id={"log__disableTime"}>00:{ disableTime }</span>
                         }
                         <Button variant="contained"
                                 color="primary"
                                 onClick={ () => onValidate(this.passwordRef.value) }
-                                disabled={ disableTime }
+                                disabled={ !!disableTime }
                         >
                             Valider
                         </Button>

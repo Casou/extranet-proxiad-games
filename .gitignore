@@ -22,5 +22,6 @@ yarn-error.log*
 
 .idea
 *.iml
-*.jpg
+public/photos/female/*.jpg
+public/photos/male/*.jpg
 package-lock.json

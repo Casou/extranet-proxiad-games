@@ -74,16 +74,16 @@ class Portfolio extends React.Component {
                 <AppBar position="static" classes={ { root : "appbar-root" }}>
                     <Tabs value={value}
                           onChange={this.handleChange}
-                          classes={{ root: classes.tabsRoot, indicator: classes.tabsIndicator, disabled : classes.tabDisabled }}
+                          classes={{ root: classes.tabsRoot, indicator: classes.tabsIndicator }}
                           scrollable
                           scrollButtons="auto"
                     >
-                        <Tab label="Agence" disabled classes={{ root: classes.tabDisabled, selected: classes.tabSelected }} />
+                        <Tab key={"Agence"} label="Agence" disabled classes={{ root: classes.tabDisabled, selected: classes.tabSelected }} />
                         { VILLES.map(nom => <Tab key={ nom } label={ nom } value={ nom } classes={{ root: classes.tabRoot, selected: classes.tabSelected }} />) }
                     </Tabs>
                 </AppBar>
                 <main>
-                    { people.map(p => <PeopleCard people={p} />) }
+                    { people.map(p => <PeopleCard key={p.surname+p.name} people={p} />) }
                 </main>
             </div>
         );
