@@ -1,25 +1,51 @@
 import React, { Component } from 'react';
-import logo from './logo.svg';
 import './App.css';
+import Portfolio from "./components/portfolio/Portfolio";
+import LoginPage from "./components/loginPage/LoginPage";
 
 class App extends Component {
+
+    state = {
+        jsonData : [],
+        isLogged : false
+    };
+
+    constructor(props) {
+        super(props);
+        fetch("data.json")
+            .then(response => response.json())
+            .then(response => {
+                this.setState({
+                    ...this.state,
+                    jsonData : response
+                });
+            });
+        this.validatePassword = this.validatePassword.bind(this);
+        this.loginPage = null;
+    }
+
+    validatePassword(password) {
+        if (password === "414") {
+            this.setState({
+                ...this.state,
+                isLogged : true
+            });
+        } else {
+            this.loginPage.wrongPasswordEntered();
+        }
+    }
+
   render() {
     return (
-      <div className="App">
-        <header className="App-header">
-          <img src={logo} className="App-logo" alt="logo" />
-          <p>
-            Edit <code>src/App.js</code> and save to reload.
-          </p>
-          <a
-            className="App-link"
-            href="https://reactjs.org"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Learn React
-          </a>
-        </header>
+      <div id={"app"}>
+          { !this.state.isLogged ?
+              <LoginPage onValidate={this.validatePassword}
+                         timeout={30}
+                         innerRef={ref => this.loginPage = ref}
+              />
+          :
+              <Portfolio jsonData={ this.state.jsonData }/>
+          }
       </div>
     );
   }
