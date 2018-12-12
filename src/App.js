@@ -7,7 +7,7 @@ class App extends Component {
 
     state = {
         jsonData : [],
-        isLogged : false
+        isLogged : true
     };
 
     constructor(props) {
