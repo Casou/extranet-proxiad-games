@@ -7,6 +7,7 @@ import { withStyles } from '@material-ui/core/styles';
 import { VILLES } from "../../common/common.js";
 import PeopleCard from "./components/PeopleCard";
 import './style/Portfolio.css';
+import PeopleDialog from "./components/PeopleDialog";
 
 const styles = theme => ({
     root: {
@@ -17,7 +18,7 @@ const styles = theme => ({
         borderBottom: '1px solid #e8e8e8',
     },
     tabsIndicator: {
-        backgroundColor: '#ffbf7f',
+        backgroundColor: '#43B3FB',
     },
     tabDisabled : {
         color: '#f1f1f1',
@@ -44,10 +45,10 @@ const styles = theme => ({
             '"Segoe UI Symbol"',
         ].join(','),
         '&:hover': {
-            color: '#ffbf7f',
+            color: '#43B3FB',
         },
         '&$tabSelected': {
-            color: '#ffbf7f',
+            color: '#43B3FB',
             fontWeight: "bold",
         }
     },
@@ -58,23 +59,32 @@ const styles = theme => ({
 
 class Portfolio extends React.Component {
     state = {
-        value: "Lille",
+        city: "Lille",
+        chosenPeople : null,
+        dialogOpen : false
     };
 
-    handleChange = (event, value) => {
-        this.setState({ value });
+    changeCity = (event, city) => {
+        this.setState({ ...this.state, city });
+    };
+
+    choosePeople = (people) => {
+        this.setState({ ...this.state, chosenPeople : people, dialogOpen : true });
+    };
+    unchoosePeople = () => {
+        this.setState({ ...this.state, chosenPeople : null, dialogOpen : false });
     };
 
     render() {
         const { jsonData, classes } = this.props;
-        const { value } = this.state;
+        const { city, chosenPeople, dialogOpen } = this.state;
 
-        const people = jsonData.filter(data => data.region === value);
+        const people = jsonData.filter(data => data.region === city);
         return (
             <div id="portfolio_list">
                 <AppBar position="static" classes={ { root : "appbar-root" }}>
-                    <Tabs value={value}
-                          onChange={this.handleChange}
+                    <Tabs value={city}
+                          onChange={this.changeCity}
                           classes={{ root: classes.tabsRoot, indicator: classes.tabsIndicator }}
                           scrollable
                           scrollButtons="auto"
@@ -84,8 +94,11 @@ class Portfolio extends React.Component {
                     </Tabs>
                 </AppBar>
                 <main>
-                    { people.map(p => <PeopleCard key={p.surname+p.name} people={p} />) }
+                    { people.map(p => <PeopleCard key={p.surname+p.name} people={p} onClick={ this.choosePeople } />) }
                 </main>
+                <PeopleDialog open={dialogOpen}
+                              people={chosenPeople}
+                              handleClose={this.unchoosePeople} />
             </div>
         );
     }

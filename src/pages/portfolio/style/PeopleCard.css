@@ -1,5 +1,6 @@
 .card_media {
     height : 150px;
+    cursor : pointer;
 }
 
 .card_action_area {

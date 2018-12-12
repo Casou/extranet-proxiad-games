@@ -1,0 +1,108 @@
+/*
+couleurs Proxiad
+Bleu clair : #43B3FB
+Bleu foncé : #23385D
+ */
+
+.people_dialog {
+    position : relative;
+}
+
+.people_dialog__content {
+    padding : 0 !important;
+}
+
+.people_dialog h1 {
+    font-size : 18px;
+    color : #23385D;
+}
+
+#people_dialog__background {
+    background: #23385D url('/resources/images/bg-profile-intro.png') no-repeat center top;
+    background-size: cover;
+    display : inline-block;
+    width : 100%;
+    height : 150px;
+    position: relative;
+}
+
+#people_dialog__background_overlay {
+    background-color: rgba(61, 80, 108, 0.8);
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+}
+
+
+#people_dialog__head #people_dialog__head_img,
+#people_dialog__head aside {
+    float : left;
+    width : 50%;
+}
+
+#people_dialog__head #people_dialog__head_img {
+    position : relative;
+    margin-top : -135px;
+    text-transform: uppercase;
+}
+
+#people_dialog__head #people_dialog__head_img img {
+    height : 200px;
+    border-radius : 150px;
+    border : 5px solid white;
+}
+
+#people_dialog__head #people_dialog__head_img h1 {
+    color : black;
+    font-size : 22px;
+    margin : 0;
+}
+
+
+
+.people_dialog__content #people_dialog__head,
+.people_dialog__content > main {
+    padding : 25px;
+}
+
+.people_dialog__content label {
+    font-weight : bold;
+}
+
+.people_dialog__content #people_dialog__head aside {
+    background-color : #f1f1f1;
+    padding : 20px;
+}
+
+.people_dialog__content #people_dialog__head aside h1 {
+    font-size : 20px;
+    color : #433f3f;
+    margin : 0 0 10px 0;
+    border-bottom : 1px solid grey;
+}
+
+
+
+
+
+
+/*
+#people_dialog__aside {
+    box-sizing: border-box;
+    position : absolute;
+    right : 0;
+    top : 0;
+    height : 100%;
+    width : 300px;
+    padding : 24px;
+    background-color: #23385D;
+    color : white;
+}
+
+#people_dialog__aside label {
+    font-weight : bold;
+}
+*/
+
