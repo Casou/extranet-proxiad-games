@@ -6,16 +6,17 @@
     position: absolute;
 }
 
-#portfolio_list .card {
+#portfolio_list .card_main {
     flex : 0 1 250px;
     margin : 20px;
+    width : 250px;
 }
-#portfolio_list .card h1 {
+#portfolio_list .card_main h1 {
     font-size : 18px;
     text-align : center;
     margin-top : 0;
 }
-#portfolio_list .card ul {
+#portfolio_list .card_main ul {
     list-style-type : none;
     margin : 0;
     padding : 0;

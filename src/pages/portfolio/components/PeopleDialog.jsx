@@ -3,7 +3,6 @@ import PropTypes from 'prop-types';
 import '../style/PeopleDialog.css';
 import Dialog from "@material-ui/core/Dialog/Dialog";
 import DialogContent from "@material-ui/core/DialogContent/DialogContent";
-import FontAwesome from "react-fontawesome";
 
 const PeopleDialog = ({ open, handleClose, people }) => {
     if (!people) {
@@ -24,7 +23,7 @@ const PeopleDialog = ({ open, handleClose, people }) => {
                 <div id="people_dialog__background"><div id="people_dialog__background_overlay"></div></div>
                 <div id={"people_dialog__head"}>
                     <div id={"people_dialog__head_img"}>
-                        <img src={ people.photo } alt={"[PHOTO]"} />
+                        <img src={ people.photo } alt={ people.photo } />
                         <h1>{people.name} {people.surname}</h1>
                     </div>
 
@@ -41,17 +40,89 @@ const PeopleDialog = ({ open, handleClose, people }) => {
                 </div>
 
                 <main>
-                    <h1><FontAwesome name={"diamond"}/>Compétences</h1>
+                    <div>
+                        <h1>
+                            <div className={"people_dialog__icon"}>
+                                <i className="fa fa-diamond" />
+                            </div>
+                            Compétences
+                        </h1>
+                        <div className={"people_dialog__skill_category"}>
+                            <h2>Backend Technology</h2>
+                            <ul>
+                                <li>Spring</li>
+                                <li>Spring Boot</li>
+                                <li>Java EE</li>
+                                <li>Spring MongoDB</li>
+                            </ul>
+                        </div>
+                        <div className={"people_dialog__skill_category"}>
+                            <h2>Databases and Servers</h2>
+                            <ul>
+                                <li>MySQL</li>
+                                <li>MongoDB</li>
+                            </ul>
+                        </div>
+                        <div className={"people_dialog__skill_category"}>
+                            <h2>Programming Languages</h2>
+                            <ul>
+                                <li>Java</li>
+                                <li>PHP</li>
+                                <li>Javascript</li>
+                            </ul>
+                        </div>
+                    </div>
 
-                    <h1>Missions précédentes</h1>
+                    <div>
+                        <h1>
+                            <div className={"people_dialog__icon"}>
+                                <i className="fa fa-comments" />
+                            </div>
+                            Langues
+                        </h1>
+                        <div className={"people_dialog__languages"}>
+                            <ul>
+                                <li>
+                                    <div className={"people_dialog__languages_icon"}>
+                                        <i className={"flagIcon france"} />
+                                    </div>
+                                    <label>Français</label>
+                                </li>
+                                <li>
+                                    <div className={"people_dialog__languages_icon"}>
+                                        <i className={"flagIcon angleterre"} />
+                                    </div>
+                                    <label>Anglais</label>
+                                </li>
+                                <li>
+                                    <div className={"people_dialog__languages_icon"}>
+                                        <i className={"flagIcon klingon"} />
+                                    </div>
+                                    <label>Klingon</label>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
 
-                    <h1>Intérêts</h1>
+                    <div>
+                        <h1>
+                            <div className={"people_dialog__icon"}>
+                                <i className="fa fa-leaf" />
+                            </div>
+                            Intérêts
+                        </h1>
+                    </div>
 
-                    <h1>Langues</h1>
-
-                    <h1>Éducation</h1>
-
+                    <div>
+                        <h1>
+                            <div className={"people_dialog__icon"}>
+                                <i className="fa fa fa-graduation-cap" />
+                            </div>
+                            Éducation
+                        </h1>
+                    </div>
                 </main>
+
             </DialogContent>
         </Dialog>
     );

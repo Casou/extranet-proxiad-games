@@ -1,12 +1,17 @@
 .card_media {
-    height : 150px;
+    height : 200px;
+    width : 100%;
     cursor : pointer;
+}
+
+.card_clickable_area {
+    width : 100%;
 }
 
 .card_action_area {
     width : 100%;
 }
 
-.card label {
-    font-weight : bold;
+.card h1 {
+    margin : 0;
 }

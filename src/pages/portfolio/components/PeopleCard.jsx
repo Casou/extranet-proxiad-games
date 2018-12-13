@@ -8,12 +8,12 @@ import '../style/PeopleCard.css';
 
 const PeopleCard = ({ people, onClick }) => {
     return (
-        <article onClick={ () => onClick(people) }>
-            <Card classes={{root : "card"}}
+        <article className={"card"} onClick={ () => onClick(people) }>
+            <Card classes={{root : "card_main"}}
                   component={"div"}
                   raised={true}
             >
-                <CardActionArea>
+                <CardActionArea classes={{root : "card_clickable_area"}}>
                     <CardMedia
                         classes={{root : "card_media"}}
                         image={ people.photo }
@@ -23,17 +23,11 @@ const PeopleCard = ({ people, onClick }) => {
                         <h1>
                             { people.name } { people.surname }
                         </h1>
-                        <ul>
-                            <li><label>Arrivée : </label><span>{ people.birthday.dmy }</span></li>
-                            <li><label>Age : </label><span>{ people.age } ans</span></li>
-                            <li><label>Email : </label><span>{ people.email }</span></li>
-                            <li><label>Téléphone : </label><span>{ people.phone }</span></li>
-                            <li><label>CB : </label><span>{ people.credit_card.number }</span></li>
-                        </ul>
                     </CardContent>
                 </CardActionArea>
             </Card>
-        </article>);
+        </article>
+    );
 };
 
 PeopleCard.propTypes = {
