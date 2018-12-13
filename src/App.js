@@ -7,19 +7,12 @@ class App extends Component {
 
     state = {
         jsonData : [],
-        isLogged : true
+        isLogged : true,
+        token : "12345"
     };
 
     constructor(props) {
         super(props);
-        fetch("data.json")
-            .then(response => response.json())
-            .then(response => {
-                this.setState({
-                    ...this.state,
-                    jsonData : response
-                });
-            });
         this.validatePassword = this.validatePassword.bind(this);
         this.loginPage = null;
     }
@@ -44,7 +37,7 @@ class App extends Component {
                          innerRef={ref => this.loginPage = ref}
               />
           :
-              <Portfolio jsonData={ this.state.jsonData }/>
+              <Portfolio />
           }
       </div>
     );

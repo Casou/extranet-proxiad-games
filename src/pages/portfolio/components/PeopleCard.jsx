@@ -16,7 +16,7 @@ const PeopleCard = ({ people, onClick }) => {
                 <CardActionArea classes={{root : "card_clickable_area"}}>
                     <CardMedia
                         classes={{root : "card_media"}}
-                        image={ people.photo }
+                        image={ `/photos/${ people.sex }/${ people.pictureIndex }.jpg` }
                         title={ people.name }
                     />
                     <CardContent>

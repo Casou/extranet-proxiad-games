@@ -61,8 +61,29 @@ class Portfolio extends React.Component {
     state = {
         city: "Lille",
         chosenPeople : null,
-        dialogOpen : false
+        dialogOpen : false,
+        people : []
     };
+
+    constructor(props) {
+        super(props);
+
+        const myHeaders = new Headers();
+        myHeaders.append("Authorization", "12345");
+        const myInit = { method: 'GET',
+            headers: myHeaders,
+            mode: 'cors',
+            cache: 'default' };
+
+        fetch("http://localhost:8000/people/all", myInit)
+            .then(response => response.json())
+            .then(response => {
+                this.setState({
+                    ...this.state,
+                    people : response
+                });
+            });
+    }
 
     changeCity = (event, city) => {
         this.setState({ ...this.state, city });
@@ -76,10 +97,10 @@ class Portfolio extends React.Component {
     };
 
     render() {
-        const { jsonData, classes } = this.props;
-        const { city, chosenPeople, dialogOpen } = this.state;
+        const { classes } = this.props;
+        const { city, chosenPeople, dialogOpen, people } = this.state;
 
-        const people = jsonData.filter(data => data.region === city);
+        const cityPeople = people.filter(data => data.city === city);
         return (
             <div id="portfolio_list">
                 <AppBar position="static" classes={ { root : "appbar-root" }}>
@@ -94,7 +115,7 @@ class Portfolio extends React.Component {
                     </Tabs>
                 </AppBar>
                 <main>
-                    { people.map(p => <PeopleCard key={p.surname+p.name} people={p} onClick={ this.choosePeople } />) }
+                    { cityPeople.map(p => <PeopleCard key={p.surname+p.name} people={p} onClick={ this.choosePeople } />) }
                 </main>
                 <PeopleDialog open={dialogOpen}
                               people={chosenPeople}
@@ -105,7 +126,6 @@ class Portfolio extends React.Component {
 }
 
 Portfolio.propTypes = {
-    jsonData : PropTypes.array.isRequired
 };
 
 export default withStyles(styles)(Portfolio);
