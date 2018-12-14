@@ -114,7 +114,7 @@ class LoginPage extends Component {
                     />
                     <div id={"log_actions"}>
                         {
-                            disableTime && <span id={"log__disableTime"}>00:{ disableTime }</span>
+                            disableTime && <span id={"log__disableTime"}>00:{ disableTime < 10 ? "0" + disableTime : disableTime }</span>
                         }
                         <Button variant="contained"
                                 color="primary"

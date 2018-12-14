@@ -8,6 +8,10 @@ import { VILLES } from "../../common/common.js";
 import PeopleCard from "./components/PeopleCard";
 import './style/Portfolio.css';
 import PeopleDialog from "./components/PeopleDialog";
+import connect from "react-redux/es/connect/connect";
+import {assign} from "lodash";
+import {bindActionCreators} from "redux";
+import AuthorizationActions from "../loginPage/actions/AuthorizationActions";
 
 const styles = theme => ({
     root: {
@@ -69,19 +73,31 @@ class Portfolio extends React.Component {
         super(props);
 
         const myHeaders = new Headers();
-        myHeaders.append("Authorization", "12345");
+        myHeaders.append("Authorization", props.authorization.token);
         const myInit = { method: 'GET',
             headers: myHeaders,
             mode: 'cors',
             cache: 'default' };
 
-        fetch("http://localhost:8000/people/all", myInit)
-            .then(response => response.json())
+        const url = "http://localhost:8000/people/all";
+        fetch(url, myInit)
+            .then(response => {
+                if (response.status === 401) {
+                    console.error(response);
+                    return Promise.reject("Error while fetching " + url + " : " + response.status + " " + response.statusText);
+                } else {
+                    return response.json();
+                }
+            })
             .then(response => {
                 this.setState({
                     ...this.state,
                     people : response
                 });
+            })
+            .catch((error) => {
+                console.error(error);
+                props.authorizationAction.unauthorizedToken();
             });
     }
 
@@ -128,4 +144,8 @@ class Portfolio extends React.Component {
 Portfolio.propTypes = {
 };
 
-export default withStyles(styles)(Portfolio);
+export default connect(state => assign({}, {
+    authorization: state.authorization
+}), dispatch => ({
+    authorizationAction: bindActionCreators(AuthorizationActions, dispatch)
+}))(withStyles(styles)(Portfolio));

@@ -1,15 +1,13 @@
-import React, { Component } from 'react';
+import React, {Component} from 'react';
 import './App.css';
 import Portfolio from "./pages/portfolio/Portfolio";
 import LoginPage from "./pages/loginPage/LoginPage";
+import {connect} from "react-redux";
+import {bindActionCreators} from "redux";
+import AuthorizationActions from "./pages/loginPage/actions/AuthorizationActions";
+import {assign} from "lodash";
 
 class App extends Component {
-
-    state = {
-        jsonData : [],
-        isLogged : true,
-        token : "12345"
-    };
 
     constructor(props) {
         super(props);
@@ -18,30 +16,30 @@ class App extends Component {
     }
 
     validatePassword(password) {
-        if (password === "414") {
-            this.setState({
-                ...this.state,
-                isLogged : true
-            });
-        } else {
-            this.loginPage.wrongPasswordEntered();
-        }
+        this.props.authorizationAction.login(password)
+            .catch(() => this.loginPage.wrongPasswordEntered());
     }
 
-  render() {
-    return (
-      <div id={"app"}>
-          { !this.state.isLogged ?
-              <LoginPage onValidate={this.validatePassword}
-                         timeout={30}
-                         innerRef={ref => this.loginPage = ref}
-              />
-          :
-              <Portfolio />
-          }
-      </div>
-    );
-  }
+    render() {
+        const { authorization } = this.props;
+
+        return (
+            <div id={"app"}>
+                {!authorization ?
+                    <LoginPage onValidate={this.validatePassword}
+                               timeout={0}
+                               innerRef={ref => this.loginPage = ref}
+                    />
+                    :
+                    <Portfolio/>
+                }
+            </div>
+        );
+    }
 }
 
-export default App;
+export default connect(state => assign({}, {
+    authorization: state.authorization
+}), dispatch => ({
+    authorizationAction: bindActionCreators(AuthorizationActions, dispatch)
+}))(App);
