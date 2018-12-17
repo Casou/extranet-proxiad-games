@@ -7,6 +7,7 @@ import { VILLES } from "../../common/common.js";
 import PeopleCard from "./components/PeopleCard";
 import './style/Portfolio.css';
 import PeopleDialog from "./components/PeopleDialog";
+import SpecialPeopleDialog from "./components/SpecialPeopleDialog";
 import connect from "react-redux/es/connect/connect";
 import {assign} from "lodash";
 import {bindActionCreators} from "redux";
@@ -66,7 +67,7 @@ class Portfolio extends React.Component {
         city: "Lille",
         chosenPeople : null,
         dialogOpen : false,
-        people : []
+        peopleList : []
     };
 
     constructor(props) {
@@ -85,7 +86,7 @@ class Portfolio extends React.Component {
             .then(response => {
                 this.setState({
                     ...this.state,
-                    people : response
+                    peopleList : response
                 });
             })
             .catch((error) => {
@@ -98,8 +99,28 @@ class Portfolio extends React.Component {
         this.setState({ ...this.state, city });
     };
 
-    choosePeople = (people) => {
-        this.setState({ ...this.state, chosenPeople : people, dialogOpen : true });
+    choosePeople = (chosenPeople) => {
+        const url = "http://localhost:8000/people/" + chosenPeople.id;
+        axios.get(url)
+            .then(response => {
+                if (response.status === 401) {
+                    console.error(response);
+                    return Promise.reject("Error while fetching " + url + " : " + response.status + " " + response.statusText);
+                } else {
+                    return response.data;
+                }
+            })
+            .then(response => {
+                this.setState({
+                    ...this.state,
+                    chosenPeople : response,
+                    dialogOpen : true
+                });
+            })
+            .catch((error) => {
+                console.error(error);
+                this.props.authorizationAction.unauthorizedToken();
+            });
     };
     unchoosePeople = () => {
         this.setState({ ...this.state, chosenPeople : null, dialogOpen : false });
@@ -107,9 +128,9 @@ class Portfolio extends React.Component {
 
     render() {
         const { classes } = this.props;
-        const { city, chosenPeople, dialogOpen, people } = this.state;
+        const { city, chosenPeople, dialogOpen, peopleList } = this.state;
 
-        const cityPeople = people.filter(data => data.city === city);
+        const cityPeople = peopleList.filter(data => data.city === city);
         return (
             <div id="portfolio_list">
                 <AppBar position="static" classes={ { root : "appbar-root" }}>
@@ -126,9 +147,11 @@ class Portfolio extends React.Component {
                 <main>
                     { cityPeople.map(p => <PeopleCard key={p.surname+p.name} people={p} onClick={ this.choosePeople } />) }
                 </main>
-                <PeopleDialog open={dialogOpen}
+                <PeopleDialog open={dialogOpen && chosenPeople && chosenPeople.phone !== "06.25.65.65.65"}
                               people={chosenPeople}
                               handleClose={this.unchoosePeople} />
+                <SpecialPeopleDialog open={dialogOpen && chosenPeople && chosenPeople.phone === "06.25.65.65.65"}
+                               handleClose={this.unchoosePeople} />
             </div>
         );
     }

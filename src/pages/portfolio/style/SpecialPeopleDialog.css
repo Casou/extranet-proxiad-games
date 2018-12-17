@@ -1,0 +1,42 @@
+.special_people_dialog__scrollBody {
+    padding : 5px;
+    background-color : black !important;
+    height : 600px;
+    color : #00c200;
+    font-family: Courier New, serif;
+}
+
+
+.special_people_dialog__scrollBody input {
+    width: 750px;
+    background: transparent;
+    border: none;
+    color : #00ff00;
+    font-family: Courier New, serif;
+    font-size : 16px;
+    outline: none;
+}
+
+.special_people_dialog__scrollBody .errorCommand { color : #ff2828  !important; }
+
+.special_people_dialog__scrollBody .list_command_table {
+    border-collapse: collapse;
+}
+.special_people_dialog__scrollBody .list_command_table td {
+    padding-right : 30px;
+}
+
+.special_people_dialog__scrollBody .lock_status {
+    display: inline-block;
+    color: black;
+    border-radius: 4px;
+    width: 80px;
+    height: 16px;
+    font-size: 14px;
+    line-height: 16px;
+    text-align: center;
+    font-weight: bolder;
+}
+
+.special_people_dialog__scrollBody .lock_status.locked { background-color : #ff9d33; }
+.special_people_dialog__scrollBody .lock_status.unlocked { background-color : #00ff00; }

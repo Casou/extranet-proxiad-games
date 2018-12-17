@@ -30,8 +30,8 @@ const PeopleDialog = ({ open, handleClose, people }) => {
                     <aside>
                         <h1>Profil :</h1>
                         <ul>
-                            <li><label>Date de naissance : </label><span>{ people.birthday.dmy } / { people.age } ans</span></li>
-                            <li><label>Date d'arrivée : </label><span>{ people.birthday.dmy }</span></li>
+                            <li><label>Date de naissance : </label><span>{ people.birthday } / { people.age } ans</span></li>
+                            <li><label>Date d'arrivée : </label><span>{ people.birthday }</span></li>
                             <li><label>Email : </label><span>{ people.email }</span></li>
                             <li><label>Téléphone : </label><span>{ people.phone }</span></li>
                             <li><label>Lieu de travail</label><span>{ people.workPlace }</span></li>
