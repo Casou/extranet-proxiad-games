@@ -2,14 +2,23 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import '../style/SpecialPeopleDialog.css';
 import Dialog from "@material-ui/core/Dialog/Dialog";
-import {handleCommand} from "../action/handleCommand";
+import {handleCommand, progressbar} from "../action/handleCommand";
 
 class SpecialPeopleDialog extends React.Component {
 
     state = {
         command : "",
-        commandHistory : []
+        commandHistory : [],
+        canInput : true
     };
+
+    constructor(props) {
+        super(props);
+
+        this._onChange = this._onChange.bind(this);
+        this._onKeyPressed = this._onKeyPressed.bind(this);
+        this._progress = this._progress.bind(this);
+    }
 
     componentWillReceiveProps(nextProps) {
         if (this.props.open !== nextProps.open && nextProps.open) {
@@ -22,7 +31,7 @@ class SpecialPeopleDialog extends React.Component {
 
     render() {
         const { open, handleClose } = this.props;
-        const { command, commandHistory } = this.state;
+        const { command, commandHistory, canInput } = this.state;
 
         return (
             <Dialog
@@ -44,17 +53,21 @@ class SpecialPeopleDialog extends React.Component {
                     commandHistory.map(c =>
                         <span>
                             <span>$ root@extranet > { c.command }</span><br/>
-                            <span dangerouslySetInnerHTML={{__html: c.response}}
+                            <span dangerouslySetInnerHTML={{__html: c.text}}
                                   className={c.status === "ok" ? "" : "errorCommand"}></span>
                         </span>)
                 }
-                <div>
-                    <span>$ root@extranet > </span>
-                    <input type={"text"}
-                           onChange={this._onChange.bind(this)}
-                           onKeyPress={this._onKeyPressed.bind(this)}
-                           value={command} />
-                </div>
+                {
+                    canInput &&
+                    <div>
+                        <span>$ root@extranet > </span>
+                        <input type={"text"}
+                               onChange={this._onChange.bind(this)}
+                               onKeyPress={this._onKeyPressed.bind(this)}
+                               autoFocus={true}
+                               value={command} />
+                    </div>
+                }
             </Dialog>
         );
     }
@@ -82,20 +95,26 @@ class SpecialPeopleDialog extends React.Component {
                 handleCommand(command).then(response => {
                     commandHistory.push({
                         command,
-                        response : response,
-                        status : "ok"
+                        response : response.text,
+                        text : response.isProgress ? "" : response.text,
+                        status : "ok",
+                        isProgress : response.isProgress
                     });
 
                     this.setState({
                         ...this.state,
                         command : "",
-                        commandHistory
-                    });
-                }).catch(error => {
+                        commandHistory,
+                        canInput : false
+                    }, this._progress);
+
+
+                }).catch(response => {
                     commandHistory.push({
                         command,
-                        response : error,
-                        status : "ko"
+                        text : response.text,
+                        status : "ko",
+                        isProgress : false
                     });
 
                     this.setState({
@@ -116,16 +135,34 @@ class SpecialPeopleDialog extends React.Component {
         return true;
     }
 
-}
+    _progress() {
+        const { commandHistory } = this.state;
 
-/*
-<span id={"commandInput"} contentEditable={true}
-                          suppressContentEditableWarning
-                          onKeyPress={this.onKeyPressed}
-                          ref={ instance => this.commandInput = instance }>
-                    </span>
-                    <span>_</span>
- */
+        const progressIndex = commandHistory.findIndex(cmd => cmd.isProgress);
+        if (progressIndex < 0) {
+            return;
+        }
+
+        setTimeout(() => {
+            const progressDto = commandHistory[progressIndex];
+            const progressStatus = progressDto.progress || 0;
+
+            progressDto.progress = Math.min(100, progressStatus + Math.round(Math.random() * 10));
+            progressDto.isProgress = progressDto.progress < 100;
+            if (progressDto.isProgress) {
+                progressDto.text = progressbar(progressDto.progress, 30);
+            } else {
+                progressDto.text = progressbar(progressDto.progress, 30) + "<br/>" + progressDto.response;
+            }
+            commandHistory[progressIndex] = progressDto;
+
+            this.setState({ ...this.state, commandHistory, canInput : !progressDto.isProgress }, () => {
+                this._progress();
+            });
+        }, 100);
+    }
+
+}
 
 SpecialPeopleDialog.propTypes = {
     open : PropTypes.bool.isRequired,
