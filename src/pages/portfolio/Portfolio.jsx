@@ -1,5 +1,4 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 import AppBar from '@material-ui/core/AppBar';
 import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
@@ -12,6 +11,7 @@ import connect from "react-redux/es/connect/connect";
 import {assign} from "lodash";
 import {bindActionCreators} from "redux";
 import AuthorizationActions from "../loginPage/actions/AuthorizationActions";
+import axios from "axios";
 
 const styles = theme => ({
     root: {
@@ -72,21 +72,14 @@ class Portfolio extends React.Component {
     constructor(props) {
         super(props);
 
-        const myHeaders = new Headers();
-        myHeaders.append("Authorization", props.authorization.token);
-        const myInit = { method: 'GET',
-            headers: myHeaders,
-            mode: 'cors',
-            cache: 'default' };
-
         const url = "http://localhost:8000/people/all";
-        fetch(url, myInit)
+        axios.get(url)
             .then(response => {
                 if (response.status === 401) {
                     console.error(response);
                     return Promise.reject("Error while fetching " + url + " : " + response.status + " " + response.statusText);
                 } else {
-                    return response.json();
+                    return response.data;
                 }
             })
             .then(response => {

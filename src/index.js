@@ -8,6 +8,7 @@ import {Provider} from "react-redux";
 import thunk from "redux-thunk";
 import {composeWithDevTools} from "redux-devtools-extension";
 import reducers from "./reducers";
+import axios from "axios";
 
 const initialStore = {
     authorization : localStorage.getItem("authorization") && JSON.parse(localStorage.getItem("authorization"))
@@ -15,6 +16,11 @@ const initialStore = {
 
 const store = createStore(reducers, initialStore,
     composeWithDevTools(applyMiddleware(thunk)));
+
+store.subscribe(() => {
+    delete axios.defaults.headers.common['Authorization'];
+    axios.defaults.headers.common['Authorization'] = store.getState().authorization && store.getState().authorization.token;
+});
 
 ReactDOM.render(
     <Provider store={store}>
