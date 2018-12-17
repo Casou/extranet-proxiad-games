@@ -13,13 +13,19 @@ import axios from "axios";
 const initialStore = {
     authorization : localStorage.getItem("authorization") && JSON.parse(localStorage.getItem("authorization"))
 };
+axios.defaults.headers.common['Authorization'] = initialStore.authorization && initialStore.authorization.token;
 
 const store = createStore(reducers, initialStore,
     composeWithDevTools(applyMiddleware(thunk)));
 
 store.subscribe(() => {
     delete axios.defaults.headers.common['Authorization'];
-    axios.defaults.headers.common['Authorization'] = store.getState().authorization && store.getState().authorization.token;
+
+    const authorization = store.getState().authorization ||
+        (localStorage.getItem("authorization") && JSON.parse(localStorage.getItem("authorization")));
+
+    axios.defaults.headers.common['Authorization'] = authorization.token;
+    localStorage.setItem("authorization", JSON.stringify(authorization));
 });
 
 ReactDOM.render(
