@@ -145,7 +145,7 @@ Bleu foncé : #23385D
 
 .flagIcon.allemagne     { background-image: url('/resources/images/icones/allemagne.png'); }
 .flagIcon.angleterre    { background-image: url('/resources/images/icones/angleterre.png'); }
-.flagIcon.arabie        { background-image: url('/resources/images/icones/arabie-saoudite.png'); }
+.flagIcon.arabie-saoudite { background-image: url('/resources/images/icones/arabie-saoudite.png'); }
 .flagIcon.belgique      { background-image: url('/resources/images/icones/belgique.png'); }
 .flagIcon.bresil        { background-image: url('/resources/images/icones/bresil.png'); }
 .flagIcon.canada        { background-image: url('/resources/images/icones/canada.png'); }
@@ -157,8 +157,21 @@ Bleu foncé : #23385D
 .flagIcon.italie        { background-image: url('/resources/images/icones/italie.png'); }
 .flagIcon.japon         { background-image: url('/resources/images/icones/japon.png'); }
 .flagIcon.klingon       { background-image: url('/resources/images/icones/klingon.jpg'); }
-.flagIcon.swaziland     { background-image: url('/resources/images/icones/swaziland.jpg'); }
+.flagIcon.swaziland     { background-image: url('/resources/images/icones/swaziland.png'); }
 
+.people_dialog__interets li {
+    display : inline-block;
+    width : 120px;
+}
+
+.people_dialog__interets li .fa {
+    margin : 5px;
+    padding : 4px;
+    font-size : 18px;
+    background-color: #8ea2c1;
+    color : white;
+    border-radius: 20px;
+}
 
 /*
 #people_dialog__aside {
