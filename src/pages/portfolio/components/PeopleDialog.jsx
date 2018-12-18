@@ -54,30 +54,16 @@ const PeopleDialog = ({ open, handleClose, people }) => {
                             </div>
                             Compétences
                         </h1>
-                        <div className={"people_dialog__skill_category"}>
-                            <h2>Backend Technology</h2>
-                            <ul>
-                                <li>Spring</li>
-                                <li>Spring Boot</li>
-                                <li>Java EE</li>
-                                <li>Spring MongoDB</li>
-                            </ul>
-                        </div>
-                        <div className={"people_dialog__skill_category"}>
-                            <h2>Databases and Servers</h2>
-                            <ul>
-                                <li>MySQL</li>
-                                <li>MongoDB</li>
-                            </ul>
-                        </div>
-                        <div className={"people_dialog__skill_category"}>
-                            <h2>Programming Languages</h2>
-                            <ul>
-                                <li>Java</li>
-                                <li>PHP</li>
-                                <li>Javascript</li>
-                            </ul>
-                        </div>
+                        {
+                            Object.entries(people.skillMap).map(([key, value]) =>
+                                <div className={"people_dialog__skill_category"}>
+                                    <h2>{ key }</h2>
+                                    <ul>
+                                        { value.map(skill => <li>{ skill }</li>) }
+                                    </ul>
+                                </div>
+                            )
+                        }
                     </div>
 
                     <div>
