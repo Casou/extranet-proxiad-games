@@ -37,11 +37,11 @@ const PeopleDialog = ({ open, handleClose, people }) => {
                     <aside>
                         <h1>Profil :</h1>
                         <ul>
-                            <li><label>Date de naissance : </label><span>{ birthdate } / { people.age } ans</span></li>
+                            <li><label>Date de naissance : </label><span>{ birthdate } ({ people.age } ans)</span></li>
                             <li><label>Date d'arrivée : </label><span>{ arrivalDate }</span></li>
                             <li><label>Email : </label><span>{ people.email }</span></li>
                             <li><label>Téléphone : </label><span>{ people.phone }</span></li>
-                            <li><label>Lieu de travail</label><span>{ people.workPlace }</span></li>
+                            <li><label>Lieu de travail : </label><span>{ people.workPlace }</span></li>
                         </ul>
                     </aside>
                 </div>
@@ -56,10 +56,10 @@ const PeopleDialog = ({ open, handleClose, people }) => {
                         </h1>
                         {
                             Object.entries(people.skillMap).map(([key, value]) =>
-                                <div className={"people_dialog__skill_category"}>
+                                <div key={ key } className={"people_dialog__skill_category"}>
                                     <h2>{ key }</h2>
                                     <ul>
-                                        { value.map(skill => <li>{ skill }</li>) }
+                                        { value.map(skill => <li key={skill}>{ skill }</li>) }
                                     </ul>
                                 </div>
                             )
@@ -77,7 +77,7 @@ const PeopleDialog = ({ open, handleClose, people }) => {
                             <ul>
                                 {
                                     people.languages.map(language =>
-                                        <li>
+                                        <li key={ language.icon }>
                                             <div className={"people_dialog__languages_icon"}>
                                                 <i className={"flagIcon " + language.icon} title={language.icon} />
                                             </div>
@@ -100,7 +100,7 @@ const PeopleDialog = ({ open, handleClose, people }) => {
                             <ul>
                                 {
                                     people.interets.map(interet =>
-                                        <li>
+                                        <li key={ interet }>
                                             <i className="fa fa-check" />
                                             { interet }
                                         </li>
@@ -108,15 +108,6 @@ const PeopleDialog = ({ open, handleClose, people }) => {
                                 }
                             </ul>
                         </div>
-                    </div>
-
-                    <div>
-                        <h1>
-                            <div className={"people_dialog__icon"}>
-                                <i className="fa fa fa-graduation-cap" />
-                            </div>
-                            Éducation
-                        </h1>
                     </div>
                 </main>
 

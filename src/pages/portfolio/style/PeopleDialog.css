@@ -44,7 +44,7 @@ Bleu foncé : #23385D
 
 #people_dialog__head #people_dialog__head_img {
     position : relative;
-    margin-top : -135px;
+    margin-top : -130px;
     text-transform: uppercase;
 }
 
@@ -161,7 +161,8 @@ Bleu foncé : #23385D
 
 .people_dialog__interets li {
     display : inline-block;
-    width : 120px;
+    min-width : 120px;
+    margin : 5px 10px;
 }
 
 .people_dialog__interets li .fa {
