@@ -46,31 +46,36 @@ class SpecialPeopleDialog extends React.Component {
                 fullWidth={true}
                 maxWidth={'md'}
             >
-                <div>
-                    Welcome to IA Root domain.<br/>
-                    Type 'help' to list all the consoleHistory.<br/>
-                    ---
-                </div>
-
-                {
-                    consoleHistory.map(c =>
-                        <span key={makeid()}>
-                            <span>$ root@extranet > { c.command }</span><br/>
-                            <span dangerouslySetInnerHTML={{__html: c.text}}
-                                  className={c.status === "ok" ? "" : "errorCommand"}></span>
-                        </span>)
-                }
-                {
-                    canInput &&
+                <header>
+                    Terminal
+                </header>
+                <main>
                     <div>
-                        <span>$ root@extranet > </span>
-                        <input type={"text"}
-                               onChange={this._onChange.bind(this)}
-                               onKeyDown={this._onKeyPressed.bind(this)}
-                               autoFocus={true}
-                               value={command} />
+                        Welcome to AI Main domain.<br/>
+                        Type 'help' to list all the commands.<br/>
+                        ---
                     </div>
-                }
+
+                    {
+                        consoleHistory.map(c =>
+                            <div key={makeid()}>
+                                <span>$ root@extranet > { c.command }</span><br/>
+                                <span dangerouslySetInnerHTML={{__html: c.text}}
+                                      className={c.status === "ok" ? "" : "errorCommand"}></span>
+                            </div>)
+                    }
+                    {
+                        canInput &&
+                        <div>
+                            <span>$ root@extranet > </span>
+                            <input type={"text"}
+                                   onChange={this._onChange.bind(this)}
+                                   onKeyDown={this._onKeyPressed.bind(this)}
+                                   autoFocus={true}
+                                   value={command} />
+                        </div>
+                    }
+                </main>
             </Dialog>
         );
     }
@@ -193,8 +198,6 @@ class SpecialPeopleDialog extends React.Component {
             const progressDto = consoleHistory[progressIndex];
             const progressStatus = progressDto.progress || 0;
             const progressStep = progressDto.progressStep || 10;
-
-            console.log(progressStep);
 
             progressDto.progress = Math.min(100, progressStatus + Math.round(Math.random() * progressStep));
             progressDto.isProgress = progressDto.progress < 100;
