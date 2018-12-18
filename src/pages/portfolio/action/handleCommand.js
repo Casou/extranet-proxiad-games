@@ -1,7 +1,8 @@
 const AVAILABLE_COMMANDS = [
-    { command : "help", description : "Liste les commandes" },
-    { command : "unlock", description : "Débloque les verrous" },
-    { command : "clean", description : "Nettoie les commandes précédentes" },
+    { command : "help", description : "List all commands" },
+    { command : "unlock", description : "Unlock bolts" },
+    { command : "clean", description : "Erase previous command in the console" },
+    { command : "terminator", description : "Give a root access to the AI on all your computers (you lost half of your remaining time)" },
 ];
 
 
@@ -13,11 +14,21 @@ export const handleCommand = (command) => {
                 isProgress : false
             });
         }
-        if (command.split(" ")[0] === 'unlock') {
-            resolve(handleUnlock(command));
+
+        let args = command.split(" ");
+        if (args[0] === "sudo") {
+            args = args.slice(1);
         }
 
-        reject({ text : "Unknown command '" + command.split(" ")[0] + "'" });
+        if (args[0] === 'unlock') {
+            try {
+                resolve(handleUnlock(command));
+            } catch(e) {
+                reject({ text : e });
+            }
+        }
+
+        reject({ text : "Unknown command '" + args[0] + "'" });
     });
 };
 
@@ -57,21 +68,64 @@ const handleUnlock = (command) => {
         return returnObject;
     }
 
-    const arg1 = args[1];
-    if (arg1 === '-list') {
+    const options = {};
+    for (let index = 1; index < args.length; index++) {
+        parseParam(options, args, index);
+    }
+
+    if (options.list) {
+        if (options.id || options.password) {
+            throw new Error("The -list option should be used alone");
+        }
         returnObject.text = `
-            <ul class="lock_list">
-                <li><span class="lock_status unlocked">UNLOCKED</span> <span>Enigme 1</span></li>
-                <li><span class="lock_status locked">LOCKED</span> <span>Enigme 2</span></li>
-                <li><span class="lock_status locked">LOCKED</span> <span>Enigme 3</span></li>
-            </ul>
-        `;
+                <ul class="lock_list">
+                    <li><span class="lock_status unlocked">UNLOCKED</span> <span>Enigme 1</span></li>
+                    <li><span class="lock_status locked">LOCKED</span> <span>Enigme 2</span></li>
+                    <li><span class="lock_status locked">LOCKED</span> <span>Enigme 3</span></li>
+                </ul>
+            `;
         return returnObject;
     }
 
-    returnObject.text = "Unlock successful";
-    returnObject.isProgress = true;
+    // returnObject.text = "Unlock successful";
+    // returnObject.isProgress = true;
     return returnObject;
+};
+
+const parseParam = (options = {}, args, index) => {
+    const arg1 = args[index];
+    if (arg1 === '-list') {
+        options.list = true;
+        return options;
+    }
+
+    if (arg1 === '-id') {
+        if (args.length < index + 1) {
+            throw new Error("Error : the -id option should been followed by the id of the riddle.")
+        }
+        index++;
+        const arg2 = args[index];
+        if (arg2.substring(0, 1) === '-') {
+            throw new Error("Error : the -id option should been followed by the id of the riddle.")
+        }
+        options.id = arg2;
+        return options;
+    }
+
+    if (arg1 === '-pass') {
+        if (args.length < index + 1) {
+            throw new Error("Error : the -pass option should been followed by the password of the riddle.")
+        }
+        index++;
+        const arg2 = args[index];
+        if (arg2.substring(0, 1) === '-') {
+            throw new Error("Error : the -pass option should been followed by the password of the riddle.")
+        }
+        options.password = arg2;
+        return options;
+    }
+
+    return options;
 };
 
 
@@ -88,4 +142,4 @@ export const progressbar = (percent, width) => {
         left += '&nbsp;';
     }
     return '[' + taken + left + '] ' + percent + '%';
-}
+};
