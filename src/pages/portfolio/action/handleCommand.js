@@ -6,6 +6,23 @@ const AVAILABLE_COMMANDS = [
 ];
 
 
+
+export const progressbar = (percent, width) => {
+    const size = Math.round(width*percent/100);
+    let left = '', taken = '', i;
+    for (i=size; i--;) {
+        taken += '=';
+    }
+    if (taken.length > 0) {
+        taken = taken.replace(/=$/, '>');
+    }
+    for (i=width-size; i--;) {
+        left += '&nbsp;';
+    }
+    return '[' + taken + left + '] ' + percent + '%';
+};
+
+
 export const handleCommand = (command) => {
     return new Promise((resolve, reject) => {
         if (command.trim() === 'help') {
@@ -22,7 +39,15 @@ export const handleCommand = (command) => {
 
         if (args[0] === 'unlock') {
             try {
-                resolve(handleUnlock(command));
+                resolve(handleUnlock(args));
+            } catch(e) {
+                reject({ text : e });
+            }
+        }
+
+        if (args[0] === 'terminator') {
+            try {
+                resolve(handleTerminator(args));
             } catch(e) {
                 reject({ text : e });
             }
@@ -43,8 +68,7 @@ const getHelpString = () => {
         + '</tbody></table>';
 };
 
-const handleUnlock = (command) => {
-    const args = command.split(" ");
+const handleUnlock = (args) => {
     const returnObject = {
         text : null,
         isProgress : false
@@ -53,15 +77,15 @@ const handleUnlock = (command) => {
     if (args.length === 1) {
         returnObject.text = `
         <div>
-            <div>Utilisez un des arguments suivants : </div>
+            <div>The unlock command should be used with parameter(s) : </div>
             <table class="list_command_table">
                 <tbody>
-                    <tr><td>-list</td><td>Liste les verrous</td></tr>
-                    <tr><td>-id &lt;id&gt;</td><td>L'id du verrou à ouvrir</td></tr>
-                    <tr><td>-pass &lt;password&gt;</td><td>Le mot de passe pour ouvrir le verrou</td></tr>
+                    <tr><td>-list</td><td>List bolts</td></tr>
+                    <tr><td>-id &lt;id&gt;</td><td>Bolt id to open</td></tr>
+                    <tr><td>-pass &lt;password&gt;</td><td>Bolt password</td></tr>
                 </tbody>
             </table>
-            <div>Exemple : unlock -id verrou1 -pass premierPassword</div>
+            <div>Example : unlock -id bolt1 -pass firstPassword</div>
         </div>
         `;
 
@@ -79,9 +103,9 @@ const handleUnlock = (command) => {
         }
         returnObject.text = `
                 <ul class="lock_list">
-                    <li><span class="lock_status unlocked">UNLOCKED</span> <span>Enigme 1</span></li>
-                    <li><span class="lock_status locked">LOCKED</span> <span>Enigme 2</span></li>
-                    <li><span class="lock_status locked">LOCKED</span> <span>Enigme 3</span></li>
+                    <li><span class="lock_status unlocked">UNLOCKED</span>  <span>Bolt 1 (id : bolt1)</span></li>
+                    <li><span class="lock_status locked">LOCKED</span>      <span>Bolt 2 (id : bolt2)</span></li>
+                    <li><span class="lock_status locked">LOCKED</span>      <span>Bolt 3 (id : bolt3)</span></li>
                 </ul>
             `;
         return returnObject;
@@ -128,18 +152,30 @@ const parseParam = (options = {}, args, index) => {
     return options;
 };
 
+const handleTerminator = (args) => {
+    const returnObject = {
+        text : null,
+        isProgress : false
+    };
 
-export const progressbar = (percent, width) => {
-    const size = Math.round(width*percent/100);
-    let left = '', taken = '', i;
-    for (i=size; i--;) {
-        taken += '=';
+    if (args.length === 1) {
+        returnObject.text = `
+        <div>
+            Are you sure you want to use the terminator command and waste half of your remaining time ?
+            If so, type the command <i>'terminator -F'</i>.
+        </div>
+        `;
+
+        return returnObject;
     }
-    if (taken.length > 0) {
-        taken = taken.replace(/=$/, '>');
+
+    if (args[1] !== '-F') {
+        throw new Error("Unrecognized argument : " + args[1]);
     }
-    for (i=width-size; i--;) {
-        left += '&nbsp;';
-    }
-    return '[' + taken + left + '] ' + percent + '%';
+
+    returnObject.text = "Root access granted to the AI... asshole...";
+    returnObject.isProgress = true;
+    returnObject.progressStep = 3;
+
+    return returnObject;
 };

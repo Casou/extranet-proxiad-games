@@ -104,7 +104,8 @@ class SpecialPeopleDialog extends React.Component {
                         response : response.text,
                         text : response.isProgress ? "" : response.text,
                         status : "ok",
-                        isProgress : response.isProgress
+                        isProgress : response.isProgress,
+                        progressStep : response.progressStep
                     });
 
                     this.setState({
@@ -191,8 +192,11 @@ class SpecialPeopleDialog extends React.Component {
         setTimeout(() => {
             const progressDto = consoleHistory[progressIndex];
             const progressStatus = progressDto.progress || 0;
+            const progressStep = progressDto.progressStep || 10;
 
-            progressDto.progress = Math.min(100, progressStatus + Math.round(Math.random() * 10));
+            console.log(progressStep);
+
+            progressDto.progress = Math.min(100, progressStatus + Math.round(Math.random() * progressStep));
             progressDto.isProgress = progressDto.progress < 100;
             if (progressDto.isProgress) {
                 progressDto.text = progressbar(progressDto.progress, 30);
