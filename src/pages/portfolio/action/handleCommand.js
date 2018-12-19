@@ -55,6 +55,14 @@ export const handleCommand = (command, riddleStatus) => {
             }
         }
 
+        if (args[0] === 'redpill') {
+            try {
+                resolve(handleRedPill(args));
+            } catch(e) {
+                reject({ text : e });
+            }
+        }
+
         reject({ text : "Unknown command '" + args[0] + "'" });
     });
 };
@@ -94,9 +102,11 @@ const handleUnlock = (args, riddleStatus) => {
         return returnObject;
     }
 
-    const options = {};
-    for (let index = 1; index < args.length; index++) {
-        parseParam(options, args, index);
+    const options = {
+        index : 1
+    };
+    for (options.index; options.index < args.length; options.index++) {
+        parseParam(options, args);
     }
 
     if (options.list) {
@@ -110,6 +120,11 @@ const handleUnlock = (args, riddleStatus) => {
                     ).join("") }
                 </ul>`
             ;
+        if (!Object.entries(riddleStatus).filter(entry => !entry[1]).length) {
+            returnObject.text += `<br/>
+                All riddles unlocked. Type '<b>redpill</b>' to infiltrate the AI. 
+            `;
+        }
         return returnObject;
     }
     if (options.id) {
@@ -117,15 +132,13 @@ const handleUnlock = (args, riddleStatus) => {
             throw new Error("You should set a password.");
         }
 
-        returnObject.options = options;
+        returnObject.unlock = options;
         return returnObject;
     }
     if (options.password) {
         throw new Error("You should set an id.");
     }
 
-    // returnObject.text = "Unlock successful";
-    // returnObject.isProgress = true;
     return returnObject;
 };
 
@@ -141,19 +154,19 @@ const renderRiddleItem = (id, status) => {
     `;
 };
 
-const parseParam = (options = {}, args, index) => {
-    const arg1 = args[index];
+const parseParam = (options = {}, args) => {
+    const arg1 = args[options.index];
     if (arg1 === '-list') {
         options.list = true;
         return options;
     }
 
     if (arg1 === '-id' || arg1 === '-i') {
-        if (args.length <= index + 1) {
+        if (args.length <= options.index + 1) {
             throw new Error("Error : the -id option should been followed by the id of the riddle.")
         }
-        index++;
-        const arg2 = args[index];
+        options.index++;
+        const arg2 = args[options.index];
         if (arg2.substring(0, 1) === '-') {
             throw new Error("Error : the -id option should been followed by the id of the riddle.")
         }
@@ -162,11 +175,11 @@ const parseParam = (options = {}, args, index) => {
     }
 
     if (arg1 === '-pass' || arg1 === '-p') {
-        if (args.length <= index + 1) {
+        if (args.length <= options.index + 1) {
             throw new Error("Error : the -pass option should been followed by the password of the riddle.")
         }
-        index++;
-        const arg2 = args[index];
+        options.index++;
+        const arg2 = args[options.index];
         if (arg2.substring(0, 1) === '-') {
             throw new Error("Error : the -pass option should been followed by the password of the riddle.")
         }
@@ -201,6 +214,16 @@ const handleTerminator = (args) => {
     returnObject.text = "Root access granted to the AI... asshole...";
     returnObject.isProgress = true;
     returnObject.progressStep = 3;
+
+    return returnObject;
+};
+
+const handleRedPill = () => {
+    const returnObject = {
+        text : '<br/><br/><div class="access_granted"><span>Access granted</span></div><br/>',
+        isProgress : false,
+        redpill : true
+    };
 
     return returnObject;
 };

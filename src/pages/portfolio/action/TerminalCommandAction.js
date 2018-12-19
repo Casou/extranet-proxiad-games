@@ -11,7 +11,7 @@ export default {
 
     postUnlockRequest: (unlockRequest) => (dispatch, getState) => {
         const url = "http://localhost:8000/unlock";
-        return axios.post(url, {id: unlockRequest.options.id, password: unlockRequest.options.password})
+        return axios.post(url, {id: unlockRequest.unlock.id, password: unlockRequest.unlock.password})
             .then(response => {
                 if (response.status !== 200) {
                     return Promise.reject("Error while fetching " + url + " : " + response.status + " " + response.statusText);
@@ -20,19 +20,39 @@ export default {
                 }
             })
             .then(() => {
-                unlockRequest.text = `<i class="fa fa-unlock"></i> <span class="lock_status unlocked">UNLOCKED</span> Riddle [${ unlockRequest.options.id }] unlocked`;
+                unlockRequest.text = `
+                    <i class="fa fa-unlock"></i> <span class="lock_status unlocked">UNLOCKED</span> Riddle [${ unlockRequest.unlock.id }] unlocked<br />
+                    Type <b>'unlock -list'</b> to check the status of all riddles.`;
                 unlockRequest.isProgress = true;
 
                 dispatch({
                     type : "RESOLVE_RIDDLE",
-                    payload : unlockRequest.options.id
+                    payload : unlockRequest.unlock.id
                 });
 
                 return unlockRequest;
             })
             .catch((error) => {
                 console.error(error);
-                return Promise.reject(`Error while trying to unlock riddle [${ unlockRequest.options.id}] with password [${ unlockRequest.options.password}] : ${error.response.data}`);
+                return Promise.reject(`Error while trying to unlock riddle [${ unlockRequest.unlock.id}] with password [${ unlockRequest.unlock.password}] : ${error.response.data}`);
+            });
+    },
+
+    postRedpill: () => (dispatch, getState) => {
+        const url = "http://localhost:8000/redpill";
+        return axios.get(url)
+            .then(response => {
+                if (response.status === 403) {
+                    return Promise.reject("You shouldn't have call the redpill command until all the riddles are resolved.");
+                } else if (response.status !== 200) {
+                    return Promise.reject("Error while fetching " + url + " : " + response.status + " " + response.statusText);
+                } else {
+                    return response;
+                }
+            })
+            .catch((error) => {
+                return Promise.reject((error.response && error.response.data)
+                    || `Error while executing redpill command : ${error}`);
             });
     }
 

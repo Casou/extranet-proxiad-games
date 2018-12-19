@@ -27,13 +27,15 @@ class TerminalDialog extends React.Component {
         this._onChange = this._onChange.bind(this);
         this._onKeyPressed = this._onKeyPressed.bind(this);
         this._progress = this._progress.bind(this);
+        this._addCommand = this._addCommand.bind(this);
     }
 
     componentWillReceiveProps(nextProps) {
         if (this.props.open !== nextProps.open && nextProps.open) {
             this.setState({
                 ...this.state,
-                consoleHistory : []
+                consoleHistory : [],
+                canInput : true
             });
 
             const url = "http://localhost:8000/unlock/status";
@@ -129,80 +131,63 @@ class TerminalDialog extends React.Component {
                 });
             } else {
                 handleCommand(command, riddleStatus).then(response => {
-                    if (response.options && response.options.id) {
+                    if (response.redpill) {
+                        terminalCommandAction.postRedpill().then(() => {
+                            this._addCommand({
+                                command,
+                                response : response.text,
+                                text : response.text,
+                                status : "ok",
+                                isProgress : false
+                            }, commandHistory, false, false);
+                        })
+                        .catch(postError => {
+                            this._addCommand({
+                                command,
+                                response : postError,
+                                text : postError,
+                                status : "ko",
+                                isProgress : false
+                            }, commandHistory, true);
+                        });
+                    } else if (response.unlock && response.unlock.id) {
                         terminalCommandAction.postUnlockRequest(response)
                             .then(postOk => {
-                                consoleHistory.push({
+                                this._addCommand({
                                     command,
                                     response : postOk.text,
                                     text : "",
                                     status : "ok",
                                     isProgress : true
-                                });
-
-                                this.setState({
-                                    ...this.state,
-                                    command : "",
-                                    consoleHistory,
-                                    commandHistory,
-                                    canInput : false,
-                                    historyPosition : null
-                                }, this._progress);
+                                }, commandHistory, false);
                             })
                             .catch(postError => {
-                                consoleHistory.push({
+                                this._addCommand({
                                     command,
                                     response : postError,
                                     text : postError,
                                     status : "ko",
                                     isProgress : false
-                                });
-
-                                this.setState({
-                                    ...this.state,
-                                    command : "",
-                                    consoleHistory,
-                                    commandHistory,
-                                    canInput : true,
-                                    historyPosition : null
-                                }, this._progress);
+                                }, commandHistory, true);
                             });
                     } else {
-                        consoleHistory.push({
+                        this._addCommand({
                             command,
                             response : response.text,
                             text : response.isProgress ? "" : response.text,
                             status : "ok",
                             isProgress : response.isProgress,
                             progressStep : response.progressStep
-                        });
-
-                        this.setState({
-                            ...this.state,
-                            command : "",
-                            consoleHistory,
-                            commandHistory,
-                            canInput : false,
-                            historyPosition : null
-                        }, this._progress);
+                        }, commandHistory, false);
                     }
 
                 }).catch(response => {
-                    consoleHistory.push({
+                    this._addCommand({
                         command,
                         text : response.text,
                         status : "ko",
                         isProgress : false
-                    });
-
-                    this.setState({
-                        ...this.state,
-                        command : "",
-                        consoleHistory,
-                        commandHistory,
-                        canInput : true,
-                        historyPosition : null
-                    });
+                    }, commandHistory, true);
                 });
             }
 
@@ -249,6 +234,25 @@ class TerminalDialog extends React.Component {
             command
         });
         return true;
+    }
+
+    _addCommand(commandToAdd, commandHistory, canInput, launchProgress = true) {
+        const { consoleHistory } = this.state;
+
+        consoleHistory.push(commandToAdd);
+
+        this.setState({
+            ...this.state,
+            command : "",
+            consoleHistory,
+            commandHistory,
+            canInput,
+            historyPosition : null
+        }, () => {
+            if (launchProgress) {
+                this._progress();
+            }
+        });
     }
 
     _progress() {

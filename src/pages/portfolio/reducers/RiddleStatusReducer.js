@@ -3,7 +3,8 @@ export const riddleStatus = (state = {}, action) => {
     switch (action.type) {
         case "INIT_LOCK_STATUS" :
             newStore = { ...state };
-            action.payload.forEach(riddle => newStore[riddle] = true)
+            Object.keys(newStore).forEach(riddle => newStore[riddle] = false);
+            action.payload.forEach(riddle => newStore[riddle] = true);
             break;
         case "RESOLVE_RIDDLE" :
             newStore = { ...state };
