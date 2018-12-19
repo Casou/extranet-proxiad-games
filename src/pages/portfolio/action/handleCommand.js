@@ -174,7 +174,7 @@ const parseParam = (options = {}, args, index) => {
         return options;
     }
 
-    return options;
+    throw new Error("Unknown argument '" + arg1 + "'");
 };
 
 const handleTerminator = (args) => {
