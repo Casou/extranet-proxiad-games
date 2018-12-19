@@ -7,7 +7,7 @@ import { VILLES } from "../../common/common.js";
 import PeopleCard from "./components/PeopleCard";
 import './style/Portfolio.css';
 import PeopleDialog from "./components/PeopleDialog";
-import SpecialPeopleDialog from "./components/SpecialPeopleDialog";
+import SpecialPeopleDialog from "./components/TerminalDialog";
 import connect from "react-redux/es/connect/connect";
 import {assign} from "lodash";
 import {bindActionCreators} from "redux";

@@ -1,11 +1,15 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import '../style/SpecialPeopleDialog.css';
+import '../style/TerminalDialog.css';
 import Dialog from "@material-ui/core/Dialog/Dialog";
 import {handleCommand, progressbar} from "../action/handleCommand";
 import {makeid} from "../../../common/common";
+import connect from "react-redux/es/connect/connect";
+import {assign} from "lodash";
+import {bindActionCreators} from "redux";
+import TerminalCommandAction from "../action/TerminalCommandAction";
 
-class SpecialPeopleDialog extends React.Component {
+class TerminalDialog extends React.Component {
 
     state = {
         command : "",
@@ -88,6 +92,7 @@ class SpecialPeopleDialog extends React.Component {
     }
     _onKeyPressed(event) {
         const command = event.target.value;
+        const { riddleStatus, terminalCommandAction } = this.props;
 
         if (event.which === 13 || event.keyCode === 13) {
             event.preventDefault();
@@ -103,24 +108,64 @@ class SpecialPeopleDialog extends React.Component {
                     consoleHistory : []
                 });
             } else {
-                handleCommand(command).then(response => {
-                    consoleHistory.push({
-                        command,
-                        response : response.text,
-                        text : response.isProgress ? "" : response.text,
-                        status : "ok",
-                        isProgress : response.isProgress,
-                        progressStep : response.progressStep
-                    });
+                handleCommand(command, riddleStatus).then(response => {
+                    if (response.options && response.options.id) {
+                        terminalCommandAction.postUnlockRequest(response)
+                            .then(postOk => {
+                                consoleHistory.push({
+                                    command,
+                                    response : postOk.text,
+                                    text : "",
+                                    status : "ok",
+                                    isProgress : true
+                                });
 
-                    this.setState({
-                        ...this.state,
-                        command : "",
-                        consoleHistory,
-                        commandHistory,
-                        canInput : false
-                    }, this._progress);
+                                this.setState({
+                                    ...this.state,
+                                    command : "",
+                                    consoleHistory,
+                                    commandHistory,
+                                    canInput : false,
+                                    historyPosition : null
+                                }, this._progress);
+                            })
+                            .catch(postError => {
+                                consoleHistory.push({
+                                    command,
+                                    response : postError,
+                                    text : postError,
+                                    status : "ko",
+                                    isProgress : false
+                                });
 
+                                this.setState({
+                                    ...this.state,
+                                    command : "",
+                                    consoleHistory,
+                                    commandHistory,
+                                    canInput : true,
+                                    historyPosition : null
+                                }, this._progress);
+                            });
+                    } else {
+                        consoleHistory.push({
+                            command,
+                            response : response.text,
+                            text : response.isProgress ? "" : response.text,
+                            status : "ok",
+                            isProgress : response.isProgress,
+                            progressStep : response.progressStep
+                        });
+
+                        this.setState({
+                            ...this.state,
+                            command : "",
+                            consoleHistory,
+                            commandHistory,
+                            canInput : false,
+                            historyPosition : null
+                        }, this._progress);
+                    }
 
                 }).catch(response => {
                     consoleHistory.push({
@@ -135,7 +180,8 @@ class SpecialPeopleDialog extends React.Component {
                         command : "",
                         consoleHistory,
                         commandHistory,
-                        canInput : true
+                        canInput : true,
+                        historyPosition : null
                     });
                 });
             }
@@ -216,9 +262,14 @@ class SpecialPeopleDialog extends React.Component {
 
 }
 
-SpecialPeopleDialog.propTypes = {
+TerminalDialog.propTypes = {
     open : PropTypes.bool.isRequired,
     handleClose : PropTypes.func.isRequired
 };
 
-export default SpecialPeopleDialog;
+
+export default connect(state => assign({}, {
+    riddleStatus: state.riddleStatus
+}), dispatch => ({
+    terminalCommandAction: bindActionCreators(TerminalCommandAction, dispatch)
+}))(TerminalDialog);

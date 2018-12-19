@@ -1,4 +1,4 @@
-export const authorization = (stateWeather = {}, action) => {
+export const authorization = (state = {}, action) => {
     let newStore;
     switch (action.type) {
         case "SET_AUTHORIZATION" :
@@ -8,7 +8,7 @@ export const authorization = (stateWeather = {}, action) => {
             newStore = null;
             break;
         default :
-            newStore = stateWeather;
+            newStore = state;
     }
     return newStore;
 };

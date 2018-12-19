@@ -10,8 +10,17 @@ import {composeWithDevTools} from "redux-devtools-extension";
 import reducers from "./reducers";
 import axios from "axios";
 
+const getStorageItem = (name) => {
+    return localStorage.getItem(name) && JSON.parse(localStorage.getItem(name));
+};
+
 const initialStore = {
-    authorization : localStorage.getItem("authorization") && JSON.parse(localStorage.getItem("authorization"))
+    authorization : getStorageItem("authorization"),
+    riddleStatus : getStorageItem("riddleStatus") || {
+        riddle1 : false,
+        riddle2 : false,
+        riddle3 : false
+    }
 };
 axios.defaults.headers.common['Authorization'] = initialStore.authorization && initialStore.authorization.token;
 
@@ -21,12 +30,15 @@ const store = createStore(reducers, initialStore,
 store.subscribe(() => {
     delete axios.defaults.headers.common['Authorization'];
 
-    const authorization = store.getState().authorization ||
-        (localStorage.getItem("authorization") && JSON.parse(localStorage.getItem("authorization")));
+    const authorization = store.getState().authorization || getStorageItem("authorization");
 
     axios.defaults.headers.common['Authorization'] = authorization.token;
     localStorage.setItem("authorization", JSON.stringify(authorization));
+
+    const riddleStatus = store.getState().riddleStatus || getStorageItem("riddleStatus");
+    localStorage.setItem("riddleStatus", JSON.stringify(riddleStatus));
 });
+
 
 ReactDOM.render(
     <Provider store={store}>

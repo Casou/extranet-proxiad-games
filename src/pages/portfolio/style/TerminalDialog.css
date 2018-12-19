@@ -63,3 +63,8 @@
 
 .special_people_dialog__scrollBody .lock_status.locked { background-color : #ff9d33; }
 .special_people_dialog__scrollBody .lock_status.unlocked { background-color : #00ff00; }
+
+.special_people_dialog__scrollBody .fa-lock,
+.special_people_dialog__scrollBody .fa-unlock {
+    width : 25px;
+}

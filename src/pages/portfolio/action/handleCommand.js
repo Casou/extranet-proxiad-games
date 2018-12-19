@@ -1,3 +1,5 @@
+import React from 'react';
+
 const AVAILABLE_COMMANDS = [
     { command : "help", description : "List all commands" },
     { command : "unlock", description : "Unlock bolts" },
@@ -23,7 +25,7 @@ export const progressbar = (percent, width) => {
 };
 
 
-export const handleCommand = (command) => {
+export const handleCommand = (command, riddleStatus) => {
     return new Promise((resolve, reject) => {
         if (command.trim() === 'help') {
             resolve({
@@ -39,7 +41,7 @@ export const handleCommand = (command) => {
 
         if (args[0] === 'unlock') {
             try {
-                resolve(handleUnlock(args));
+                resolve(handleUnlock(args, riddleStatus));
             } catch(e) {
                 reject({ text : e });
             }
@@ -68,7 +70,7 @@ const getHelpString = () => {
         + '</tbody></table>';
 };
 
-const handleUnlock = (args) => {
+const handleUnlock = (args, riddleStatus) => {
     const returnObject = {
         text : null,
         isProgress : false
@@ -81,8 +83,8 @@ const handleUnlock = (args) => {
             <table class="list_command_table">
                 <tbody>
                     <tr><td>-list</td><td>List bolts</td></tr>
-                    <tr><td>-id &lt;id&gt;</td><td>Bolt id to open</td></tr>
-                    <tr><td>-pass &lt;password&gt;</td><td>Bolt password</td></tr>
+                    <tr><td>-i, -id &lt;id&gt;</td><td>Bolt id to open</td></tr>
+                    <tr><td>-p, -pass &lt;password&gt;</td><td>Bolt password</td></tr>
                 </tbody>
             </table>
             <div>Example : unlock -id bolt1 -pass firstPassword</div>
@@ -101,19 +103,42 @@ const handleUnlock = (args) => {
         if (options.id || options.password) {
             throw new Error("The -list option should be used alone");
         }
-        returnObject.text = `
-                <ul class="lock_list">
-                    <li><span class="lock_status unlocked">UNLOCKED</span>  <span>Bolt 1 (id : bolt1)</span></li>
-                    <li><span class="lock_status locked">LOCKED</span>      <span>Bolt 2 (id : bolt2)</span></li>
-                    <li><span class="lock_status locked">LOCKED</span>      <span>Bolt 3 (id : bolt3)</span></li>
-                </ul>
-            `;
+        returnObject.text =
+                `<ul class="lock_list">
+                    ${ Object.entries(riddleStatus).map(entry => 
+                        renderRiddleItem(entry[0], entry[1])
+                    ).join("") }
+                </ul>`
+            ;
         return returnObject;
+    }
+    if (options.id) {
+        if (!options.password) {
+            throw new Error("You should set a password.");
+        }
+
+        returnObject.options = options;
+        return returnObject;
+    }
+    if (options.password) {
+        throw new Error("You should set an id.");
     }
 
     // returnObject.text = "Unlock successful";
     // returnObject.isProgress = true;
     return returnObject;
+};
+
+const renderRiddleItem = (id, status) => {
+    return `
+        <li>
+            ${ status ?
+                `<i class="fa fa-unlock"></i><span class="lock_status unlocked">UNLOCKED</span>` :
+                `<i class="fa fa-lock"></i><span class="lock_status locked">LOCKED</span>` }
+    
+            <span>Riddle [<i>${ id }</i>]</span>
+        </li>
+    `;
 };
 
 const parseParam = (options = {}, args, index) => {
@@ -123,8 +148,8 @@ const parseParam = (options = {}, args, index) => {
         return options;
     }
 
-    if (arg1 === '-id') {
-        if (args.length < index + 1) {
+    if (arg1 === '-id' || arg1 === '-i') {
+        if (args.length <= index + 1) {
             throw new Error("Error : the -id option should been followed by the id of the riddle.")
         }
         index++;
@@ -136,8 +161,8 @@ const parseParam = (options = {}, args, index) => {
         return options;
     }
 
-    if (arg1 === '-pass') {
-        if (args.length < index + 1) {
+    if (arg1 === '-pass' || arg1 === '-p') {
+        if (args.length <= index + 1) {
             throw new Error("Error : the -pass option should been followed by the password of the riddle.")
         }
         index++;
