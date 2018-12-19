@@ -8,6 +8,8 @@ import connect from "react-redux/es/connect/connect";
 import {assign} from "lodash";
 import {bindActionCreators} from "redux";
 import TerminalCommandAction from "../action/TerminalCommandAction";
+import axios from "axios";
+import AuthorizationActions from "../../loginPage/actions/AuthorizationActions";
 
 class TerminalDialog extends React.Component {
 
@@ -33,6 +35,24 @@ class TerminalDialog extends React.Component {
                 ...this.state,
                 consoleHistory : []
             });
+
+            const url = "http://localhost:8000/unlock/status";
+            axios.get(url)
+                .then(response => {
+                    if (response.status !== 200) {
+                        console.error(response);
+                        return Promise.reject("Error while fetching " + url + " : " + response.status + " " + response.statusText);
+                    } else {
+                        return response.data;
+                    }
+                })
+                .then(response => {
+                    nextProps.terminalCommandAction.initLockStatus(response);
+                })
+                .catch((error) => {
+                    console.error(error);
+                    nextProps.authorizationAction.unauthorizedToken();
+                });
         }
     }
 
@@ -271,5 +291,6 @@ TerminalDialog.propTypes = {
 export default connect(state => assign({}, {
     riddleStatus: state.riddleStatus
 }), dispatch => ({
-    terminalCommandAction: bindActionCreators(TerminalCommandAction, dispatch)
+    terminalCommandAction: bindActionCreators(TerminalCommandAction, dispatch),
+    authorizationAction: bindActionCreators(AuthorizationActions, dispatch)
 }))(TerminalDialog);

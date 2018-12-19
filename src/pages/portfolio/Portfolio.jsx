@@ -76,7 +76,7 @@ class Portfolio extends React.Component {
         const url = "http://localhost:8000/people/all";
         axios.get(url)
             .then(response => {
-                if (response.status === 401) {
+                if (response.status !== 200) {
                     console.error(response);
                     return Promise.reject("Error while fetching " + url + " : " + response.status + " " + response.statusText);
                 } else {
