@@ -1,5 +1,3 @@
-import React from 'react';
-
 const AVAILABLE_COMMANDS = [
     { command : "help", description : "List all commands" },
     { command : "unlock", description : "Unlock bolts" },

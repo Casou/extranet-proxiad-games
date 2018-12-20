@@ -10,6 +10,7 @@ import {bindActionCreators} from "redux";
 import TerminalCommandAction from "../action/TerminalCommandAction";
 import axios from "axios";
 import AuthorizationActions from "../../loginPage/actions/AuthorizationActions";
+import {SERVEUR_URL} from "../../../index";
 
 class TerminalDialog extends React.Component {
 
@@ -38,7 +39,7 @@ class TerminalDialog extends React.Component {
                 canInput : true
             });
 
-            const url = "http://localhost:8000/unlock/status";
+            const url = SERVEUR_URL + "unlock/status";
             axios.get(url)
                 .then(response => {
                     if (response.status !== 200) {
@@ -118,7 +119,7 @@ class TerminalDialog extends React.Component {
 
         if (event.which === 13 || event.keyCode === 13) {
             event.preventDefault();
-            const { consoleHistory, commandHistory } = this.state;
+            const { commandHistory } = this.state;
 
             commandHistory.push(command);
 

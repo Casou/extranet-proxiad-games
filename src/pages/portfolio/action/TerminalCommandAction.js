@@ -1,4 +1,5 @@
 import axios from "axios";
+import {SERVEUR_URL} from "../../../index";
 
 export default {
 
@@ -10,7 +11,7 @@ export default {
     },
 
     postUnlockRequest: (unlockRequest) => (dispatch, getState) => {
-        const url = "http://localhost:8000/unlock";
+        const url = SERVEUR_URL + "unlock";
         return axios.post(url, {id: unlockRequest.unlock.id, password: unlockRequest.unlock.password})
             .then(response => {
                 if (response.status !== 200) {
@@ -39,7 +40,7 @@ export default {
     },
 
     postRedpill: () => (dispatch, getState) => {
-        const url = "http://localhost:8000/redpill";
+        const url = SERVEUR_URL + "redpill";
         return axios.get(url)
             .then(response => {
                 if (response.status === 403) {
