@@ -10,6 +10,7 @@ import {bindActionCreators} from "redux";
 import TerminalCommandAction from "../action/TerminalCommandAction";
 import axios from "axios";
 import AuthorizationActions from "../../loginPage/actions/AuthorizationActions";
+import SockJsClient from 'react-stomp';
 import {SERVEUR_URL} from "../../../index";
 
 class TerminalDialog extends React.Component {
@@ -29,6 +30,17 @@ class TerminalDialog extends React.Component {
         this._onKeyPressed = this._onKeyPressed.bind(this);
         this._progress = this._progress.bind(this);
         this._addCommand = this._addCommand.bind(this);
+
+        this.websocketWrapper = null;
+    }
+
+    componentDidUpdate() {
+        const { open, authorization } = this.props;
+        if (open && this.websocketWrapper && this.websocketWrapper.client && this.websocketWrapper.client.connected) {
+            this.websocketWrapper.sendMessage("/test", {}, { "authorization" : authorization.token });
+            // this.websocketWrapper.disconnect();
+            // this.websocketWrapper.sendMessage(SERVEUR_URL + "/test", { "authorization" : authorization.token }, {});
+        }
     }
 
     componentWillReceiveProps(nextProps) {
@@ -60,7 +72,7 @@ class TerminalDialog extends React.Component {
     }
 
     render() {
-        const { open, handleClose } = this.props;
+        const { open, handleClose, authorization } = this.props;
         const { command, consoleHistory, canInput } = this.state;
 
         return (
@@ -73,6 +85,14 @@ class TerminalDialog extends React.Component {
                 fullWidth={true}
                 maxWidth={'md'}
             >
+                <SockJsClient url={ SERVEUR_URL + 'ws?token=' + authorization.token}
+                              headers={ { "Authorization" : authorization.token } }
+                              topics={['/topic/test']}
+                              onMessage={(msg) => { console.log(msg); }}
+                              debug={true}
+                              onConnect={ (frame) => { console.log("Connected", frame); this.forceUpdate(); }}
+                              ref={ (client) => { this.websocketWrapper = client }} />
+
                 <header>
                     Terminal
                 </header>
@@ -113,6 +133,7 @@ class TerminalDialog extends React.Component {
             command : event.target.value
         });
     }
+
     _onKeyPressed(event) {
         const command = event.target.value;
         const { riddleStatus, terminalCommandAction } = this.props;
@@ -294,7 +315,8 @@ TerminalDialog.propTypes = {
 
 
 export default connect(state => assign({}, {
-    riddleStatus: state.riddleStatus
+    riddleStatus: state.riddleStatus,
+    authorization: state.authorization
 }), dispatch => ({
     terminalCommandAction: bindActionCreators(TerminalCommandAction, dispatch),
     authorizationAction: bindActionCreators(AuthorizationActions, dispatch)
