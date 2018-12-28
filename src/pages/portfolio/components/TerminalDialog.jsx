@@ -30,17 +30,9 @@ class TerminalDialog extends React.Component {
         this._onKeyPressed = this._onKeyPressed.bind(this);
         this._progress = this._progress.bind(this);
         this._addCommand = this._addCommand.bind(this);
+        this._sendWSMessage = this._sendWSMessage.bind(this);
 
         this.websocketWrapper = null;
-    }
-
-    componentDidUpdate() {
-        const { open, authorization } = this.props;
-        if (open && this.websocketWrapper && this.websocketWrapper.client && this.websocketWrapper.client.connected) {
-            this.websocketWrapper.sendMessage("/test", {}, { "authorization" : authorization.token });
-            // this.websocketWrapper.disconnect();
-            // this.websocketWrapper.sendMessage(SERVEUR_URL + "/test", { "authorization" : authorization.token }, {});
-        }
     }
 
     componentWillReceiveProps(nextProps) {
@@ -263,6 +255,8 @@ class TerminalDialog extends React.Component {
 
         consoleHistory.push(commandToAdd);
 
+        console.log(commandToAdd);
+
         this.setState({
             ...this.state,
             command : "",
@@ -271,6 +265,7 @@ class TerminalDialog extends React.Component {
             canInput,
             historyPosition : null
         }, () => {
+            this._sendWSMessage("/terminalCommand", commandToAdd);
             if (launchProgress) {
                 this._progress();
             }
@@ -304,6 +299,15 @@ class TerminalDialog extends React.Component {
                 this._progress();
             });
         }, 100);
+    }
+
+    _sendWSMessage(url, parameters) {
+        const { open, authorization } = this.props;
+
+        if (open && this.websocketWrapper && this.websocketWrapper.client && this.websocketWrapper.client.connected) {
+            this.websocketWrapper.sendMessage(url, JSON.stringify(parameters), { "authorization" : authorization.token });
+            // this.websocketWrapper.disconnect();
+        }
     }
 
 }

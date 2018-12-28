@@ -19,10 +19,9 @@ const styles = theme => ({
 
 class LoginPage extends Component {
 
-    passwordRef = null;
-
     state = {
         passwordValue : "",
+        loginValue : "",
         snackbarOpen : false,
         disableTime : localStorage.getItem("disableTime")
     };
@@ -79,37 +78,56 @@ class LoginPage extends Component {
         localStorage.setItem("disableTime", disableTime - 1);
     }
 
-    _handleTextFieldChange(e) {
+    _handleTextFieldChange(e, field) {
+        let { passwordValue, loginValue } = this.state;
+
+        if (field === "login") {
+            loginValue = e.target.value;
+        } else {
+            passwordValue = e.target.value;
+        }
+
         this.setState({
             ...this.state,
-            passwordValue: e.target.value
+            passwordValue,
+            loginValue
         });
     }
 
     _handleTextFieldKeyPress(e) {
         if (e.key === 'Enter') {
-            this.props.onValidate(e.target.value);
+            const { loginValue, passwordValue } = this.state;
+            this.props.onValidate(loginValue, passwordValue);
         }
     }
 
     render() {
         const { classes, onValidate } = this.props;
-        const { disableTime, passwordValue } = this.state;
+        const { disableTime, loginValue, passwordValue } = this.state;
 
         return (
             <div id={"log"}>
                 <Paper className={classes.root} elevation={1}>
                     <h1>
-                         Vous devez saisir le mot de passe pour avoir accès à l'extranet
+                         Accès à l'extranet
                     </h1>
                     <TextField
-                        id="password"
-                        placeholder={"Mot de passe"}
-                        inputRef={ node => this.passwordRef = node}
-                        value={passwordValue}
-                        onChange={this._handleTextFieldChange}
+                        id="userName"
+                        label={"Utilisateur"}
+                        value={loginValue}
+                        onChange={(e) => this._handleTextFieldChange(e, "login")}
                         onKeyPress={this._handleTextFieldKeyPress}
                         disabled={ !!disableTime }
+                        fullWidth
+                    />
+                    <TextField
+                        id="password"
+                        label={"Mot de passe"}
+                        value={passwordValue}
+                        onChange={(e) => this._handleTextFieldChange(e, "password")}
+                        onKeyPress={this._handleTextFieldKeyPress}
+                        disabled={ !!disableTime }
+                        type="password"
                         fullWidth
                     />
                     <div id={"log_actions"}>
@@ -118,7 +136,7 @@ class LoginPage extends Component {
                         }
                         <Button variant="contained"
                                 color="primary"
-                                onClick={ () => onValidate(this.passwordRef.value) }
+                                onClick={ () => onValidate(loginValue, passwordValue) }
                                 disabled={ !!disableTime }
                         >
                             Valider

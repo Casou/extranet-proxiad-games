@@ -3,8 +3,8 @@ import {SERVEUR_URL} from "../../../index";
 
 export default {
 
-    login: (password) => (dispatch, getState) => {
-        return axios.post(SERVEUR_URL + "login", { password })
+    login: (login, password) => (dispatch, getState) => {
+        return axios.post(SERVEUR_URL + "login", { login, password })
             .then((response) => response.data)
             .then((response) => {
                 dispatch({

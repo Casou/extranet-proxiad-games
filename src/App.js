@@ -15,8 +15,8 @@ class App extends Component {
         this.loginPage = null;
     }
 
-    validatePassword(password) {
-        this.props.authorizationAction.login(password)
+    validatePassword(login, password) {
+        this.props.authorizationAction.login(login, password)
             .catch(() => this.loginPage.wrongPasswordEntered());
     }
 
