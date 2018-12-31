@@ -23,7 +23,7 @@ export const progressbar = (percent, width) => {
 };
 
 
-export const handleCommand = (command, riddleStatus) => {
+export const handleCommand = (command, riddleStoreArray) => {
     return new Promise((resolve, reject) => {
         if (command.trim() === 'help') {
             resolve({
@@ -39,7 +39,7 @@ export const handleCommand = (command, riddleStatus) => {
 
         if (args[0] === 'unlock') {
             try {
-                resolve(handleUnlock(args, riddleStatus));
+                resolve(handleUnlock(args, riddleStoreArray));
             } catch(e) {
                 reject({ text : e });
             }
@@ -76,7 +76,7 @@ const getHelpString = () => {
         + '</tbody></table>';
 };
 
-const handleUnlock = (args, riddleStatus) => {
+const handleUnlock = (args, riddleStoreArray) => {
     const returnObject = {
         text : null,
         isProgress : false
@@ -113,12 +113,12 @@ const handleUnlock = (args, riddleStatus) => {
         }
         returnObject.text =
                 `<ul class="lock_list">
-                    ${ Object.entries(riddleStatus).map(entry => 
-                        renderRiddleItem(entry[0], entry[1])
+                    ${ riddleStoreArray.riddles.map(riddle => 
+                        renderRiddleItem(riddle.riddleId, riddle.isResolved)
                     ).join("") }
                 </ul>`
             ;
-        if (!Object.entries(riddleStatus).filter(entry => !entry[1]).length) {
+        if (!riddleStoreArray.riddles.filter(riddle => !riddle.isResolved).length) {
             returnObject.text += `<br/>
                 All riddles unlocked. Type '<b>redpill</b>' to infiltrate the AI. 
             `;
@@ -147,7 +147,7 @@ const renderRiddleItem = (id, status) => {
                 `<i class="fa fa-unlock"></i><span class="lock_status unlocked">UNLOCKED</span>` :
                 `<i class="fa fa-lock"></i><span class="lock_status locked">LOCKED</span>` }
     
-            <span>Riddle [<i>${ id }</i>]</span>
+            <span>Riddle [id : <i>${ id }</i>]</span>
         </li>
     `;
 };

@@ -22,11 +22,7 @@ const getStorageItem = (name) => {
 
 const initialStore = {
     authorization : getStorageItem("authorization"),
-    riddleStatus : getStorageItem("riddleStatus") || {
-        riddle1 : false,
-        riddle2 : false,
-        riddle3 : false
-    }
+    riddleStatus : getStorageItem("riddleStatus") || []
 };
 axios.defaults.headers.common['Authorization'] = initialStore.authorization && initialStore.authorization.token;
 
