@@ -12,7 +12,7 @@ export default {
 
     postUnlockRequest: (unlockRequest) => (dispatch, getState) => {
         const url = SERVEUR_URL + "unlock";
-        return axios.post(url, {id: unlockRequest.unlock.id, password: unlockRequest.unlock.password})
+        return axios.post(url, {riddleId: unlockRequest.unlock.id, password: unlockRequest.unlock.password})
             .then(response => {
                 if (response.status !== 200) {
                     return Promise.reject("Error while fetching " + url + " : " + response.status + " " + response.statusText);

@@ -79,7 +79,7 @@ class TerminalDialog extends React.Component {
             >
                 <SockJsClient url={ SERVEUR_URL + 'ws?token=' + authorization.token}
                               headers={ { "Authorization" : authorization.token } }
-                              topics={['/topic/test']}
+                              topics={['/topic/nothing-happens']}
                               onMessage={(msg) => { console.log(msg); }}
                               debug={true}
                               onConnect={ (frame) => { console.log("Connected", frame); this.forceUpdate(); }}
@@ -254,8 +254,6 @@ class TerminalDialog extends React.Component {
         const { consoleHistory } = this.state;
 
         consoleHistory.push(commandToAdd);
-
-        console.log(commandToAdd);
 
         this.setState({
             ...this.state,

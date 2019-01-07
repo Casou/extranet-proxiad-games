@@ -6,7 +6,7 @@ export const riddleStatus = (state = {}, action) => {
             break;
         case "RESOLVE_RIDDLE" :
             riddleStoreArray = { ...state };
-            riddleStoreArray[action.payload] = true;
+            riddleStoreArray.riddles.filter(r => r.riddleId === action.payload)[0].isResolved = true;
             break;
         default :
             riddleStoreArray = state;
