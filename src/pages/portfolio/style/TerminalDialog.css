@@ -69,6 +69,11 @@
     width : 25px;
 }
 
+.special_people_dialog__scrollBody .redpill {
+    font-weight : bold;
+    color : #ff9d33;
+}
+
 .access_granted {
     text-align: center;
     font-size: 50px;

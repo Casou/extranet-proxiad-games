@@ -120,7 +120,7 @@ const handleUnlock = (args, riddleStoreArray) => {
             ;
         if (!riddleStoreArray.riddles.filter(riddle => !riddle.isResolved).length) {
             returnObject.text += `<br/>
-                All riddles unlocked. Type '<b>redpill</b>' to infiltrate the AI. 
+                All riddles unlocked. Type '<span class="redpill">redpill</span>' to infiltrate the AI. 
             `;
         }
         return returnObject;
