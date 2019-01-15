@@ -8,6 +8,7 @@ import CloseIcon from '@material-ui/icons/Close';
 import IconButton from '@material-ui/core/IconButton';
 import Snackbar from '@material-ui/core/Snackbar';
 import './LoginPage.css';
+import LoginComment from "./LoginComment";
 
 const styles = theme => ({
     root: {
@@ -107,6 +108,9 @@ class LoginPage extends Component {
 
         return (
             <div id={"log"}>
+                <LoginComment text={"Password : glados"}
+                              fakeText={"TODO : remove hard coded password"} />
+
                 <Paper className={classes.root} elevation={1}>
                     <h1>
                          Accès à l'extranet

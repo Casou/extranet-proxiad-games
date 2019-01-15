@@ -26,3 +26,11 @@
     margin-right : 15px;
     color : grey;
 }
+
+.comment {
+    position : absolute;
+    top : 0;
+    left : 0;
+    padding : 0 !important;
+    width: auto !important;
+}

@@ -6,6 +6,7 @@ import {connect} from "react-redux";
 import {bindActionCreators} from "redux";
 import AuthorizationActions from "./pages/loginPage/actions/AuthorizationActions";
 import {assign} from "lodash";
+import LoginComment from "./pages/loginPage/LoginComment";
 
 class App extends Component {
 
