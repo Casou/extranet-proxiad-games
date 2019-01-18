@@ -13,7 +13,7 @@ import {assign} from "lodash";
 import {bindActionCreators} from "redux";
 import AuthorizationActions from "../loginPage/actions/AuthorizationActions";
 import axios from "axios";
-import {SERVEUR_URL} from "../../index";
+import {SERVER_URL} from "../../index";
 
 const styles = theme => ({
     root: {
@@ -74,7 +74,7 @@ class Portfolio extends React.Component {
     constructor(props) {
         super(props);
 
-        const url = SERVEUR_URL + "people/all";
+        const url = SERVER_URL + "people/all";
         axios.get(url)
             .then(response => {
                 if (response.status !== 200) {
@@ -101,7 +101,7 @@ class Portfolio extends React.Component {
     };
 
     choosePeople = (chosenPeople) => {
-        const url = SERVEUR_URL + "people/" + chosenPeople.id;
+        const url = SERVER_URL + "people/" + chosenPeople.id;
         axios.get(url)
             .then(response => {
                 if (response.status === 400 || response.status === 401) {

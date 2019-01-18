@@ -11,9 +11,9 @@ import reducers from "./reducers";
 import axios from "axios";
 
 console.debug("Environnement : " + process.env.NODE_ENV);
-export let SERVEUR_URL = "http://localhost:8000/";
+export let SERVER_URL = "http://localhost:8000/";
 if (process.env.NODE_ENV === "production") {
-    SERVEUR_URL = "http://localhost:8000/";
+    SERVER_URL = "http://localhost:8000/";
 }
 
 const getStorageItem = (name) => {

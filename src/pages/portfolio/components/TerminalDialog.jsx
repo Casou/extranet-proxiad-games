@@ -11,7 +11,7 @@ import TerminalCommandAction from "../action/TerminalCommandAction";
 import axios from "axios";
 import AuthorizationActions from "../../loginPage/actions/AuthorizationActions";
 import SockJsClient from 'react-stomp';
-import {SERVEUR_URL} from "../../../index";
+import {SERVER_URL} from "../../../index";
 
 class TerminalDialog extends React.Component {
 
@@ -43,7 +43,7 @@ class TerminalDialog extends React.Component {
                 canInput : true
             });
 
-            const url = SERVEUR_URL + "unlock/status";
+            const url = SERVER_URL + "unlock/status";
             axios.get(url)
                 .then(response => {
                     if (response.status !== 200) {
@@ -77,7 +77,7 @@ class TerminalDialog extends React.Component {
                 fullWidth={true}
                 maxWidth={'md'}
             >
-                <SockJsClient url={ SERVEUR_URL + 'ws?token=' + authorization.token}
+                <SockJsClient url={ SERVER_URL + 'ws?token=' + authorization.token}
                               headers={ { "Authorization" : authorization.token } }
                               topics={['/topic/nothing-happens']}
                               onMessage={(msg) => { console.log(msg); }}

@@ -1,5 +1,5 @@
 import axios from "axios";
-import {SERVEUR_URL} from "../../../index";
+import {SERVER_URL} from "../../../index";
 
 export default {
 
@@ -11,7 +11,7 @@ export default {
     },
 
     postUnlockRequest: (unlockRequest) => (dispatch, getState) => {
-        const url = SERVEUR_URL + "unlock";
+        const url = SERVER_URL + "unlock";
         return axios.post(url, {riddleId: unlockRequest.unlock.id, password: unlockRequest.unlock.password})
             .then(response => {
                 if (response.status !== 200) {
@@ -40,7 +40,7 @@ export default {
     },
 
     postRedpill: () => (dispatch, getState) => {
-        const url = SERVEUR_URL + "redpill";
+        const url = SERVER_URL + "redpill";
         return axios.get(url)
             .then(response => {
                 if (response.status === 403) {

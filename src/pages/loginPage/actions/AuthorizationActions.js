@@ -1,10 +1,10 @@
 import axios from "axios";
-import {SERVEUR_URL} from "../../../index";
+import {SERVER_URL} from "../../../index";
 
 export default {
 
     login: (login, password) => (dispatch, getState) => {
-        return axios.post(SERVEUR_URL + "login", { login, password })
+        return axios.post(SERVER_URL + "login", { login, password })
             .then((response) => response.data)
             .then((response) => {
                 dispatch({
