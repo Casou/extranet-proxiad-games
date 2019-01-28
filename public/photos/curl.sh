@@ -15,3 +15,5 @@ do
    curl https://uinames.com/api/photos/male/$i.jpg -o male/$i.jpg
 done
 
+# https://randomuser.me/api/portraits/men/$i.jpg
+# https://randomuser.me/api/portraits/women/$i.jpg
