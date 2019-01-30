@@ -6,9 +6,15 @@ import {connect} from "react-redux";
 import {bindActionCreators} from "redux";
 import AuthorizationActions from "./pages/loginPage/actions/AuthorizationActions";
 import {assign} from "lodash";
-import LoginComment from "./pages/loginPage/LoginComment";
+import ServerError from "./pages/serverError/ServerError";
+import {SERVER_URL} from "./index";
+import axios from "axios";
 
 class App extends Component {
+
+    state = {
+		serverStatus : "NOT_YET_PINGED"
+    };
 
     constructor(props) {
         super(props);
@@ -16,13 +22,27 @@ class App extends Component {
         this.loginPage = null;
     }
 
-    validatePassword(login, password) {
+	componentDidMount() {
+		axios.get(SERVER_URL + "ping").then(() => this.setState({ serverStatus : "SERVER_OK"}))
+			.catch(() => this.setState({ serverStatus : "SERVER_ERROR"}));
+	}
+
+	validatePassword(login, password) {
         this.props.authorizationAction.login(login, password)
             .catch(() => this.loginPage.wrongPasswordEntered());
     }
 
     render() {
         const { authorization } = this.props;
+		const { serverStatus } = this.state;
+
+        if (serverStatus === "NOT_YET_PINGED") {
+            return <div />;
+        }
+
+        if (serverStatus === "SERVER_ERROR") {
+            return <ServerError url={SERVER_URL} />;
+        }
 
         return (
             <div id={"app"}>

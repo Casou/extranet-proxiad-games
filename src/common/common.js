@@ -1,3 +1,5 @@
+import {SERVER_URL} from "../index";
+
 export const VILLES = [
     "Lille",
     "Paris",

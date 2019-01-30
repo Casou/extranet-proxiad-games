@@ -10,11 +10,7 @@ import {composeWithDevTools} from "redux-devtools-extension";
 import reducers from "./reducers";
 import axios from "axios";
 
-console.debug("Environnement : " + process.env.NODE_ENV);
-export let SERVER_URL = "http://localhost:8000/";
-if (process.env.NODE_ENV === "production") {
-    SERVER_URL = "http://localhost:8000/";
-}
+export let SERVER_URL = localStorage.getItem("serverUrl") || "http://localhost:8000/";
 
 const getStorageItem = (name) => {
     return localStorage.getItem(name) && JSON.parse(localStorage.getItem(name));
