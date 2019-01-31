@@ -109,7 +109,7 @@ class LoginPage extends Component {
         return (
             <div id={"log"}>
                 <LoginComment text={"Password : glados"}
-                              fakeText={"TODO : remove hard coded password"} />
+                              fakeText={""} />
 
                 <Paper className={classes.root} elevation={1}>
                     <h1>
@@ -117,7 +117,7 @@ class LoginPage extends Component {
                     </h1>
                     <TextField
                         id="userName"
-                        label={"Utilisateur"}
+                        label={"Salle"}
                         value={loginValue}
                         onChange={(e) => this._handleTextFieldChange(e, "login")}
                         onKeyPress={this._handleTextFieldKeyPress}
