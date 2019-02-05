@@ -10,6 +10,7 @@ const PeopleDialog = ({ open, handleClose, people }) => {
         return "";
     }
 
+    console.log(people);
     const sex = people.sex === 1 ? "male" : "female";
     const photo = `/photos/${sex}/${people.pictureIndex}.jpg`;
 
@@ -32,6 +33,7 @@ const PeopleDialog = ({ open, handleClose, people }) => {
                     <div id={"people_dialog__head_img"}>
                         <img src={ photo } alt={ photo } />
                         <h1>{people.name} {people.surname}</h1>
+                        <h2>{people.job}</h2>
                     </div>
 
                     <aside>

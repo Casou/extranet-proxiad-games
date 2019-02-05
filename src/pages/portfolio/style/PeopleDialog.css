@@ -17,6 +17,11 @@ Bleu foncé : #23385D
     color : #23385D;
 }
 
+.people_dialog h2 {
+    font-size : 15px;
+    color : #5a5a5a;
+}
+
 #people_dialog__background {
     background: #23385D url('/resources/images/bg-profile-intro.png') no-repeat center top;
     background-size: cover;
