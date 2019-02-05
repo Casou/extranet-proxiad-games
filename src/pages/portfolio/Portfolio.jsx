@@ -65,7 +65,7 @@ const styles = theme => ({
 
 class Portfolio extends React.Component {
     state = {
-        city: "Lille",
+        city: "Paris",
         chosenPeople : null,
         dialogOpen : false,
         peopleList : []

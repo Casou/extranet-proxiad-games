@@ -1,9 +1,7 @@
-import {SERVER_URL} from "../index";
-
 export const VILLES = [
-    "Lille",
     "Paris",
     "Bordeaux",
+	"Lille",
     "Nantes",
     "Rouen",
     "Aix en Provence",
