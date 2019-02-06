@@ -7,7 +7,7 @@ import { VILLES } from "../../common/common.js";
 import PeopleCard from "./components/PeopleCard";
 import './style/Portfolio.css';
 import PeopleDialog from "./components/PeopleDialog";
-import SpecialPeopleDialog from "./components/TerminalDialog";
+import TerminalDialog from "./components/TerminalDialog";
 import connect from "react-redux/es/connect/connect";
 import {assign} from "lodash";
 import {bindActionCreators} from "redux";
@@ -148,10 +148,10 @@ class Portfolio extends React.Component {
                 <main>
                     { cityPeople.map(p => <PeopleCard key={p.surname+p.name} people={p} onClick={ this.choosePeople } />) }
                 </main>
-                <PeopleDialog open={dialogOpen && chosenPeople && chosenPeople.phone !== "06.25.65.65.65"}
+                <PeopleDialog open={dialogOpen && chosenPeople && chosenPeople.phone !== "06.42.11.42.23"}
                               people={chosenPeople}
                               handleClose={this.unchoosePeople} />
-                <SpecialPeopleDialog open={dialogOpen && chosenPeople && chosenPeople.phone === "06.25.65.65.65"}
+                <TerminalDialog open={dialogOpen && chosenPeople && chosenPeople.phone === "06.42.11.42.23"}
                                handleClose={this.unchoosePeople} />
             </div>
         );
