@@ -34,8 +34,8 @@ export default {
                 return unlockRequest;
             })
             .catch((error) => {
-                console.error(error);
-                return Promise.reject(`Error while trying to unlock riddle [${ unlockRequest.unlock.id}] with password [${ unlockRequest.unlock.password}] : ${error.response.data}`);
+                console.error(error.response);
+                return Promise.reject({ ...error.response, data : `Error while trying to unlock riddle [${ unlockRequest.unlock.id}] with password [${ unlockRequest.unlock.password}] : ${error.response.data}`});
             });
     },
 

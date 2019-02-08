@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import '../style/TerminalDialog.css';
 import Dialog from "@material-ui/core/Dialog/Dialog";
 import {handleCommand, progressbar} from "../action/handleCommand";
-import {makeid} from "../../../common/common";
+import {lpad, makeid} from "../../../common/common";
 import connect from "react-redux/es/connect/connect";
 import {assign} from "lodash";
 import {bindActionCreators} from "redux";
@@ -13,6 +13,14 @@ import AuthorizationActions from "../../loginPage/actions/AuthorizationActions";
 import SockJsClient from 'react-stomp';
 import {SERVER_URL} from "../../../index";
 
+const formatDisableTime = (time) => {
+	let totalSeconds = time;
+	const minutes = Math.floor(totalSeconds / 60);
+	const seconds = totalSeconds % 60;
+
+	return lpad(minutes) + ":" + lpad(seconds);
+};
+
 class TerminalDialog extends React.Component {
 
     state = {
@@ -20,7 +28,8 @@ class TerminalDialog extends React.Component {
         commandHistory : [],
         historyPosition : null,
         consoleHistory : [],
-        canInput : true
+        canInput : true,
+        disableTime : localStorage.getItem("terminalDisableTime") ? parseInt(localStorage.getItem("terminalDisableTime")) : null
     };
 
     constructor(props) {
@@ -33,39 +42,67 @@ class TerminalDialog extends React.Component {
         this._sendWSMessage = this._sendWSMessage.bind(this);
 
         this.websocketWrapper = null;
+        this.disableInterval = null;
+
+        if (this.state.disableTime) {
+			this.setState({ canInput : false });
+        }
+        console.log("constructor");
+    }
+
+    componentWillUnmount() {
+		console.log("componentWillUnmount", this.state);
     }
 
     componentWillReceiveProps(nextProps) {
-        if (this.props.open !== nextProps.open && nextProps.open) {
-            this.setState({
-                ...this.state,
-                consoleHistory : [],
-                canInput : true
-            });
+		console.log("componentWillReceiveProps", this.state, nextProps);
+        if (this.props.open !== nextProps.open) {
+            if (!nextProps.open) {
+                if (this.disableInterval) {
+                    clearInterval(this.disableInterval);
+                }
+            } else {
+				const disableTime = localStorage.getItem("terminalDisableTime") ? parseInt(localStorage.getItem("terminalDisableTime")) : null;
+				this.setState({
+					...this.state,
+					consoleHistory : [],
+					disableTime,
+					canInput : !disableTime
+				}, () => console.log("componentWillReceiveProps state", this.state, localStorage.getItem("terminalDisableTime")));
 
-            const url = SERVER_URL + "unlock/status";
-            axios.get(url)
-                .then(response => {
-                    if (response.status !== 200) {
-                        console.error(response);
-                        return Promise.reject("Error while fetching " + url + " : " + response.status + " " + response.statusText);
-                    } else {
-                        return response.data;
-                    }
-                })
-                .then(response => {
-                    nextProps.terminalCommandAction.initLockStatus(response);
-                })
-                .catch((error) => {
-                    console.error(error);
-                    nextProps.authorizationAction.unauthorizedToken();
-                });
+				if (disableTime) {
+					this.disableInterval = setInterval(this._decreaseDisableTime, 1000);
+                }
+
+				const url = SERVER_URL + "unlock/status";
+				axios.get(url)
+					.then(response => {
+						if (response.status !== 200) {
+							console.error(response);
+							return Promise.reject("Error while fetching " + url + " : " + response.status + " " + response.statusText);
+						} else {
+							return response.data;
+						}
+					})
+					.then(response => {
+						nextProps.terminalCommandAction.initLockStatus(response);
+					})
+					.catch((error) => {
+						console.error(error);
+						nextProps.authorizationAction.unauthorizedToken();
+					});
+            }
         }
     }
 
     render() {
         const { open, handleClose, authorization } = this.props;
-        const { command, consoleHistory, canInput } = this.state;
+        const { command, consoleHistory, canInput, disableTime } = this.state;
+        
+        let disableMessage = null;
+        if (disableTime) {
+            disableMessage = <span id={"lockedTerminal"}><i className="fa fa-lock"></i> Locked : { formatDisableTime(disableTime) }</span>;
+        }
 
         return (
             <Dialog
@@ -88,33 +125,35 @@ class TerminalDialog extends React.Component {
                 <header>
                     Terminal
                 </header>
-                <main>
-                    <div>
-                        Welcome to AI Main domain.<br/>
-                        Type 'help' to list all the commands.<br/>
-                        ---
-                    </div>
-
-                    {
-                        consoleHistory.map(c =>
-                            <div key={makeid()}>
-                                <span>$ root@extranet > { c.command }</span><br/>
-                                <span dangerouslySetInnerHTML={{__html: c.text}}
-                                      className={c.status === "ok" ? "" : "errorCommand"}></span>
-                            </div>)
-                    }
-                    {
-                        canInput &&
+                    <main>
                         <div>
-                            <span>$ root@extranet > </span>
-                            <input type={"text"}
-                                   onChange={this._onChange.bind(this)}
-                                   onKeyDown={this._onKeyPressed.bind(this)}
-                                   autoFocus={true}
-                                   value={command} />
+                            Welcome to AI Main domain.<br/>
+                            Type 'help' to list all the commands.<br/>
+                            ---
                         </div>
-                    }
-                </main>
+
+                        {
+                            consoleHistory.map(c =>
+                                <div key={makeid()}>
+                                    <span>$ root@extranet > { c.command }</span><br/>
+                                    <span dangerouslySetInnerHTML={{__html: c.text}}
+                                          className={c.status === "ok" ? "" : "errorCommand"} />
+                                </div>)
+                        }
+                        { disableMessage }
+                        {
+                            canInput &&
+                            <div>
+                                <span>$ root@extranet > </span>
+                                <input type={"text"}
+                                       onChange={this._onChange.bind(this)}
+                                       onKeyDown={this._onKeyPressed.bind(this)}
+                                       autoFocus={true}
+                                       value={command} />
+                            </div>
+                        }
+                    </main>
+
             </Dialog>
         );
     }
@@ -125,6 +164,27 @@ class TerminalDialog extends React.Component {
             command : event.target.value
         });
     }
+
+    _decreaseDisableTime = () => {
+        const { disableTime } = this.state;
+
+        if (disableTime <= 0) {
+			this.setState({
+				canInput : true,
+				disableTime : null
+			});
+			clearInterval(this.disableInterval);
+            return;
+        }
+
+		const newDisableTime = disableTime - 1;
+		this.setState({
+			disableTime : newDisableTime
+		}, () => {
+		    localStorage.setItem("terminalDisableTime", newDisableTime + "");
+		    console.log("_decreaseDisableTime state", this.state);
+		});
+    };
 
     _onKeyPressed(event) {
         const command = event.target.value;
@@ -178,13 +238,25 @@ class TerminalDialog extends React.Component {
                             .catch(postError => {
                                 this._addCommand({
                                     command,
-                                    response : postError,
-                                    text : postError,
+                                    response : postError.data,
+                                    text : postError.data,
                                     status : "ko",
                                     isProgress : false
                                 }, commandHistory, true);
-                            });
-                    } else {
+
+                                if (postError.status === 400) {
+									const disableTime = 30;
+									localStorage.setItem("terminalDisableTime", disableTime + "");
+									this.setState({
+										canInput : false,
+										disableTime : disableTime
+									}, () => {
+									    this.disableInterval = setInterval(this._decreaseDisableTime, 1000);
+										console.log("postError state", this.state);
+									});
+								}
+							});
+					} else {
                         this._addCommand({
                             command,
                             response : response.text,

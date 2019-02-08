@@ -30,6 +30,12 @@
     overflow: auto;
 }
 
+.special_people_dialog__scrollBody #lockedTerminal {
+    font-weight: bold;
+}
+.special_people_dialog__scrollBody main#terminalDisableTime label { font-size: 75px; }
+.special_people_dialog__scrollBody main#terminalDisableTime span { font-size: 150px; }
+
 .special_people_dialog__scrollBody input {
     width: 750px;
     background: transparent;

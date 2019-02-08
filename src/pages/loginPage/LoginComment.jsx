@@ -10,7 +10,7 @@ class LoginComment extends Component {
 	}
 
 	createComment() {
-		return `<div class="comment">&lt;-- <!-- ${this.props.text} --></div>`;
+		return `<!-- ${this.props.text} -->`;
 	}
 
 	render() {
@@ -19,8 +19,7 @@ class LoginComment extends Component {
 }
 
 LoginComment.propTypes = {
-	text: PropTypes.string.isRequired,
-	fakeText: PropTypes.string.isRequired
+	text: PropTypes.string.isRequired
 };
 
 

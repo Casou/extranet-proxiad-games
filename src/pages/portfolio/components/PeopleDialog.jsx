@@ -10,7 +10,6 @@ const PeopleDialog = ({ open, handleClose, people }) => {
         return "";
     }
 
-    console.log(people);
     const sex = people.sex === 1 ? "male" : "female";
     const photo = `/photos/${sex}/${people.pictureIndex}.jpg`;
 
