@@ -94,6 +94,7 @@ const handleUnlock = (args, riddleStoreArray) => {
                 </tbody>
             </table>
             <div>Example : unlock -id riddle1 -pass firstPassword</div>
+            <div>Be careful, any failed unlock try will lock the terminal temporarily.</div>
         </div>
         `;
 
