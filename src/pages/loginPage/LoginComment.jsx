@@ -10,7 +10,7 @@ class LoginComment extends Component {
 	}
 
 	createComment() {
-		return `<div class="comment">&lt;-- ${ this.props.fakeText } --&gt; <!-- ${this.props.text} --></div>`;
+		return `<div class="comment">&lt;-- <!-- ${this.props.text} --></div>`;
 	}
 
 	render() {

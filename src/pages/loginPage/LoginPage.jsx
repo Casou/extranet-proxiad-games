@@ -22,9 +22,7 @@ class LoginPage extends Component {
 
     state = {
         passwordValue : "",
-        loginValue : "",
-        snackbarOpen : false,
-        disableTime : localStorage.getItem("disableTime")
+        snackbarOpen : false
     };
 
     constructor(props) {
@@ -32,12 +30,6 @@ class LoginPage extends Component {
         this.handleCloseSnackbar = this.handleCloseSnackbar.bind(this);
         this._handleTextFieldChange = this._handleTextFieldChange.bind(this);
         this._handleTextFieldKeyPress = this._handleTextFieldKeyPress.bind(this);
-        this._decreaseDisableTime = this._decreaseDisableTime.bind(this);
-        this.disableInterval = null;
-
-        if (this.state.disableTime) {
-            this.disableInterval = setInterval(this._decreaseDisableTime, 1000);
-        }
     }
 
     handleCloseSnackbar(event, reason) {
@@ -49,34 +41,10 @@ class LoginPage extends Component {
     }
 
     wrongPasswordEntered() {
-        this.setState({...this.state,
+        this.setState({
             snackbarOpen: true,
             passwordValue : "",
-            disableTime : this.props.timeout
-        }, () => {
-            localStorage.setItem("disableTime", this.props.timeout);
-            this.disableInterval = setInterval(this._decreaseDisableTime, 1000);
         });
-    }
-
-    _decreaseDisableTime() {
-        const { disableTime } = this.state;
-
-        if (disableTime <= 1) {
-            this.setState({
-                ...this.state,
-                disableTime : null
-            });
-            clearInterval(this.disableInterval);
-            this.disableInterval = null;
-            localStorage.removeItem("disableTime");
-            return;
-        }
-
-        this.setState({...this.state,
-            disableTime : disableTime - 1
-        });
-        localStorage.setItem("disableTime", disableTime - 1);
     }
 
     _handleTextFieldChange(e, field) {
@@ -104,12 +72,11 @@ class LoginPage extends Component {
 
     render() {
         const { classes, onValidate } = this.props;
-        const { disableTime, loginValue, passwordValue } = this.state;
+        const { loginValue, passwordValue } = this.state;
 
         return (
             <div id={"log"}>
-                <LoginComment text={"Password : glados"}
-                              fakeText={"TODO : remove hard coded password"} />
+                <LoginComment text={"Password : glados"} />
 
                 <Paper className={classes.root} elevation={1}>
                     <h1>
@@ -121,7 +88,6 @@ class LoginPage extends Component {
                         value={loginValue}
                         onChange={(e) => this._handleTextFieldChange(e, "login")}
                         onKeyPress={this._handleTextFieldKeyPress}
-                        disabled={ !!disableTime }
                         fullWidth
                     />
                     <TextField
@@ -130,18 +96,13 @@ class LoginPage extends Component {
                         value={passwordValue}
                         onChange={(e) => this._handleTextFieldChange(e, "password")}
                         onKeyPress={this._handleTextFieldKeyPress}
-                        disabled={ !!disableTime }
                         type="password"
                         fullWidth
                     />
                     <div id={"log_actions"}>
-                        {
-                            disableTime && <span id={"log__disableTime"}>00:{ disableTime < 10 ? "0" + disableTime : disableTime }</span>
-                        }
                         <Button variant="contained"
                                 color="primary"
                                 onClick={ () => onValidate(loginValue, passwordValue) }
-                                disabled={ !!disableTime }
                         >
                             Valider
                         </Button>
@@ -154,12 +115,12 @@ class LoginPage extends Component {
                         horizontal: 'left',
                     }}
                     open={this.state.snackbarOpen}
-                    autoHideDuration={6000}
+                    autoHideDuration={3000}
                     onClose={this.handleCloseSnackbar}
                     ContentProps={{
                         'aria-describedby': 'message-id',
                     }}
-                    message={<span id="message-id">Mauvais mot de passe</span>}
+                    message={<span id="message-id">Identification failed</span>}
                     action={[
                         <IconButton
                             key="close"
