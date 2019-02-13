@@ -47,15 +47,9 @@ class TerminalDialog extends React.Component {
         if (this.state.disableTime) {
 			this.setState({ canInput : false });
         }
-        console.log("constructor");
-    }
-
-    componentWillUnmount() {
-		console.log("componentWillUnmount", this.state);
     }
 
     componentWillReceiveProps(nextProps) {
-		console.log("componentWillReceiveProps", this.state, nextProps);
         if (this.props.open !== nextProps.open) {
             if (!nextProps.open) {
                 if (this.disableInterval) {
@@ -68,7 +62,7 @@ class TerminalDialog extends React.Component {
 					consoleHistory : [],
 					disableTime,
 					canInput : !disableTime
-				}, () => console.log("componentWillReceiveProps state", this.state, localStorage.getItem("terminalDisableTime")));
+				});
 
 				if (disableTime) {
 					this.disableInterval = setInterval(this._decreaseDisableTime, 1000);
@@ -182,7 +176,6 @@ class TerminalDialog extends React.Component {
 			disableTime : newDisableTime
 		}, () => {
 		    localStorage.setItem("terminalDisableTime", newDisableTime + "");
-		    console.log("_decreaseDisableTime state", this.state);
 		});
     };
 
@@ -252,7 +245,6 @@ class TerminalDialog extends React.Component {
 										disableTime : disableTime
 									}, () => {
 									    this.disableInterval = setInterval(this._decreaseDisableTime, 1000);
-										console.log("postError state", this.state);
 									});
 								}
 							});
