@@ -55,6 +55,13 @@
     padding-right : 30px;
 }
 
+.special_people_dialog__scrollBody .list_command_example {
+    font-weight : bold;
+}
+.special_people_dialog__scrollBody .list_command_warning {
+    font-style: italic;
+}
+
 .special_people_dialog__scrollBody .lock_status {
     display: inline-block;
     color: black;

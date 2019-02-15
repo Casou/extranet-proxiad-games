@@ -89,12 +89,12 @@ const handleUnlock = (args, riddleStoreArray) => {
             <table class="list_command_table">
                 <tbody>
                     <tr><td>-list</td><td>List riddles</td></tr>
-                    <tr><td>-i, -id &lt;id&gt;</td><td>Riddle id to open</td></tr>
+                    <tr><td>-i, -id &lt;id&gt;</td><td>Riddle id to open (formatted date <i>YYYYMMDD</i>)</td></tr>
                     <tr><td>-p, -pass &lt;password&gt;</td><td>Riddle password</td></tr>
                 </tbody>
             </table>
-            <div>Example : unlock -id riddle1 -pass firstPassword</div>
-            <div>Be careful, any failed unlock try will lock the terminal temporarily.</div>
+            <div class="list_command_example">Example : unlock -id 20181225 -pass itsChristmas</div>
+            <div class="list_command_warning">Be careful, any failed unlock try will lock the terminal temporarily.</div>
         </div>
         `;
 
@@ -114,7 +114,7 @@ const handleUnlock = (args, riddleStoreArray) => {
         }
         returnObject.text =
                 `<ul class="lock_list">
-                    ${ riddleStoreArray.riddles.map(riddle => 
+                    ${ riddleStoreArray.riddles.map((riddle) => 
                         renderRiddleItem(riddle.riddleId, riddle.isResolved)
                     ).join("") }
                 </ul>`
@@ -148,7 +148,7 @@ const renderRiddleItem = (id, status) => {
                 `<i class="fa fa-unlock"></i><span class="lock_status unlocked">UNLOCKED</span>` :
                 `<i class="fa fa-lock"></i><span class="lock_status locked">LOCKED</span>` }
     
-            <span>Riddle [id : <i>${ id }</i>]</span>
+            <span>Riddle [id : ${ id }]</span>
         </li>
     `;
 };

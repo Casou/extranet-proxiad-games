@@ -238,8 +238,11 @@ class TerminalDialog extends React.Component {
                                 }, commandHistory, true);
 
                                 if (postError.status === 400) {
-									const disableTime = 30;
+                                    let terminalErrors = (localStorage.getItem("terminalErrors") && parseInt(localStorage.getItem("terminalErrors"))) || 0;
+									terminalErrors++;
+									const disableTime = Math.min(60, 30 + 10 * terminalErrors);
 									localStorage.setItem("terminalDisableTime", disableTime + "");
+									localStorage.setItem("terminalErrors", terminalErrors + "");
 									this.setState({
 										canInput : false,
 										disableTime : disableTime
