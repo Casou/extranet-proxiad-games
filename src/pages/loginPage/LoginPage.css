@@ -4,11 +4,13 @@
     align-items: center;
     justify-content: center;
     text-align : center;
+    password: glados;
 }
 
 #log > div {
     padding: 25px 40px;
     width: 500px;
+    password: glados;
 }
 
 #log h1 {
