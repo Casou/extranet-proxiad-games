@@ -244,11 +244,9 @@ const handleTerminator = (args) => {
 
 
 const handleRedPill = () => {
-    const returnObject = {
+    return {
         text : '<br/><br/><div class="access_granted"><span>Access granted</span></div><br/>',
         isProgress : false,
         redpill : true
     };
-
-    return returnObject;
 };

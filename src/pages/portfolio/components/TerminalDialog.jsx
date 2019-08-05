@@ -13,6 +13,10 @@ import AuthorizationActions from "../../loginPage/actions/AuthorizationActions";
 import SockJsClient from 'react-stomp';
 import {SERVER_URL} from "../../../index";
 
+const KET_CODE_ENTER = 13;
+const KET_CODE_ARROW_UP = 38;
+const KET_CODE_ARROW_DOWN = 40;
+
 const formatDisableTime = (time) => {
   let totalSeconds = time;
   const minutes = Math.floor(totalSeconds / 60);
@@ -96,7 +100,7 @@ class TerminalDialog extends React.Component {
     let disableMessage = null;
     if (disableTime) {
       disableMessage =
-        <span id={"lockedTerminal"}><i className="fa fa-lock"></i> Locked : {formatDisableTime(disableTime)}</span>;
+        <span id={"lockedTerminal"}><i className="fa fa-lock"/> Locked : {formatDisableTime(disableTime)}</span>;
     }
 
     return (
@@ -191,7 +195,8 @@ class TerminalDialog extends React.Component {
     const command = event.target.value;
     const {riddleStatus, terminalCommandAction} = this.props;
 
-    if (event.which === 13 || event.keyCode === 13) {
+    // 13 = Enter
+    if (event.which === KET_CODE_ENTER || event.keyCode === KET_CODE_ENTER) {
       event.preventDefault();
       const {commandHistory} = this.state;
 
@@ -283,8 +288,7 @@ class TerminalDialog extends React.Component {
       return false;
     }
 
-    // Up
-    if (event.which === 38 || event.keyCode === 38) {
+    if (event.which === KET_CODE_ARROW_UP || event.keyCode === KET_CODE_ARROW_UP) {
       const {commandHistory, historyPosition} = this.state;
 
       if (commandHistory.length === 0) {
@@ -299,8 +303,7 @@ class TerminalDialog extends React.Component {
       return true;
     }
 
-    // Down
-    if (event.which === 40 || event.keyCode === 40) {
+    if (event.which === KET_CODE_ARROW_DOWN || event.keyCode === KET_CODE_ARROW_DOWN) {
       const {commandHistory, historyPosition} = this.state;
 
       if (commandHistory.length === 0) {
