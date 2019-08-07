@@ -33,6 +33,7 @@ class TerminalDialog extends React.Component {
     historyPosition: null,
     consoleHistory: [],
     canInput: true,
+    terminatorResponse : "...dumb ass...",
     disableTime: localStorage.getItem("terminalDisableTime") ? parseInt(localStorage.getItem("terminalDisableTime")) : null
   };
 
@@ -53,7 +54,23 @@ class TerminalDialog extends React.Component {
     }
   }
 
-  componentWillReceiveProps(nextProps) {
+
+  componentWillMount() {
+    const url = SERVER_URL + "parametre/TERMINAL_TERMINATOR_COMMAND_RESPONSE";
+    axios.get(url)
+      .then(response => {
+        if (response.status !== 200) {
+          console.error(response);
+          return Promise.reject("Error while fetching " + url + " : " + response.status + " " + response.statusText);
+        } else {
+          return response.data;
+        }
+      })
+      .then((parameter) => this.setState({ terminatorResponse : `<pre>${ parameter.value }</pre>` }));
+  }
+
+
+  componentWillReceiveProps(nextProps, nextContext) {
     if (this.props.open !== nextProps.open) {
       if (!nextProps.open) {
         if (this.disableInterval) {
@@ -198,7 +215,7 @@ class TerminalDialog extends React.Component {
     // 13 = Enter
     if (event.which === KET_CODE_ENTER || event.keyCode === KET_CODE_ENTER) {
       event.preventDefault();
-      const {commandHistory} = this.state;
+      const {commandHistory, terminatorResponse} = this.state;
 
       commandHistory.push(command);
 
@@ -264,6 +281,15 @@ class TerminalDialog extends React.Component {
                   });
                 }
               });
+          } else if (response.terminator) {
+            this._addCommand({
+              command,
+              response: terminatorResponse,
+              text: response.isProgress ? "" : terminatorResponse,
+              status: "ok",
+              isProgress: response.isProgress,
+              progressStep: response.progressStep
+            }, commandHistory, false);
           } else {
             this._addCommand({
               command,

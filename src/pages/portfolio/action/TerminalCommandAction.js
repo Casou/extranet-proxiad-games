@@ -22,7 +22,7 @@ export default {
             })
             .then(() => {
                 unlockRequest.text = `
-                    <i class="fa fa-unlock"></i> <span class="lock_status unlocked">UNLOCKED</span> Riddle [${ unlockRequest.unlock.id }] unlocked<br />
+                    <i class="fa fa-unlock"/> <span class="lock_status unlocked">UNLOCKED</span> Riddle [${ unlockRequest.unlock.id }] unlocked<br />
                     Type <b>'unlock -list'</b> to check the status of all riddles.`;
                 unlockRequest.isProgress = true;
 

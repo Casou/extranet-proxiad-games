@@ -145,8 +145,8 @@ const renderRiddleItem = (id, status) => {
     return `
         <li>
             ${ status ?
-                `<i class="fa fa-unlock"></i><span class="lock_status unlocked">UNLOCKED</span>` :
-                `<i class="fa fa-lock"></i><span class="lock_status locked">LOCKED</span>` }
+                `<i class="fa fa-unlock"/><span class="lock_status unlocked"/>UNLOCKED</span>` :
+                `<i class="fa fa-lock"/><span class="lock_status locked">LOCKED</span>` }
     
             <span>Riddle [id : ${ id }]</span>
         </li>
@@ -210,31 +210,7 @@ const handleTerminator = (args) => {
         throw new Error("Unrecognized argument : " + args[1]);
     }
 
-    returnObject.text = `<pre>
-                                            ____________ 
-                                    , -'"                \`\`~ , 
-                             , -"                               "- , 
-                         ,/                                        ":, 
-                     ,?                                               , 
-                   /                                                  ,} 
-                 /                                            ,:\`^\`  } 
-               /                                          ,:"xxxxxxxx / 
-              ?     __                                 :\`xxxxxxxxxx / 
-             /__ (     "~-,_                         ,:\`xxxxxxxxx / 
-           /(_    "~,_       "~,_                   ,:\`xxxxxxx _/ 
-          {  _$;_      "=,_      "-,_        , -~-,}, ~";/xxxxx } 
-           ((     *~_       "=- _     ";,, /\`    /"            / 
-   ,,,___ \`~,  \`,    ~ ,                  \`     }             / 
-            (     \`-,,       \`                     (      ;_,,-" 
-            / \`~,      \`-                                  / 
-             \`~ *-,                                  |, /     ,__ 
-,,_          } >- _-                               |              \`=~-, 
-     \`=~-,__      \`,                               
-                   \`=~-,, ,                             
-                                \`:,,                        \`              __ 
-                                     \`=-,                ,%\`>--==\`\` 
-                                        _        _,-%       \` 
-                                   ,</pre>`;
+    returnObject.terminator = true;
     returnObject.isProgress = true;
     returnObject.progressStep = 1;
 
