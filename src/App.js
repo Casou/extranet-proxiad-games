@@ -12,55 +12,56 @@ import axios from "axios";
 
 class App extends Component {
 
-    state = {
-		serverStatus : "NOT_YET_PINGED"
-    };
+  state = {
+    serverStatus: "NOT_YET_PINGED"
+  };
 
-    constructor(props) {
-        super(props);
-        this.validatePassword = this.validatePassword.bind(this);
-        this.loginPage = null;
+  constructor(props) {
+    super(props);
+    this.validatePassword = this.validatePassword.bind(this);
+    this.loginPage = null;
+  }
+
+  componentDidMount() {
+    axios.get(SERVER_URL + "ping").then(() => this.setState({serverStatus: "SERVER_OK"}))
+      .catch(() => this.setState({serverStatus: "SERVER_ERROR"}));
+  }
+
+  validatePassword(login, password) {
+    this.props.authorizationAction.login(login, password)
+      .then(() => localStorage.removeItem("terminalErrors"))
+      .catch(() => this.loginPage.wrongPasswordEntered());
+  }
+
+  render() {
+    const {authorization} = this.props;
+    const {serverStatus} = this.state;
+
+    if (serverStatus === "NOT_YET_PINGED") {
+      return <div/>;
     }
 
-	componentDidMount() {
-		axios.get(SERVER_URL + "ping").then(() => this.setState({ serverStatus : "SERVER_OK"}))
-			.catch(() => this.setState({ serverStatus : "SERVER_ERROR"}));
-	}
-
-	validatePassword(login, password) {
-        this.props.authorizationAction.login(login, password)
-            .catch(() => this.loginPage.wrongPasswordEntered());
+    if (serverStatus === "SERVER_ERROR") {
+      return <ServerError url={SERVER_URL}/>;
     }
 
-    render() {
-        const { authorization } = this.props;
-		const { serverStatus } = this.state;
-
-        if (serverStatus === "NOT_YET_PINGED") {
-            return <div />;
+    return (
+      <div id={"app"}>
+        {!authorization ?
+          <LoginPage onValidate={this.validatePassword}
+                     timeout={0}
+                     innerRef={ref => this.loginPage = ref}
+          />
+          :
+          <Portfolio/>
         }
-
-        if (serverStatus === "SERVER_ERROR") {
-            return <ServerError url={SERVER_URL} />;
-        }
-
-        return (
-            <div id={"app"}>
-                {!authorization ?
-                    <LoginPage onValidate={this.validatePassword}
-                               timeout={0}
-                               innerRef={ref => this.loginPage = ref}
-                    />
-                    :
-                    <Portfolio/>
-                }
-            </div>
-        );
-    }
+      </div>
+    );
+  }
 }
 
 export default connect(state => assign({}, {
-    authorization: state.authorization
+  authorization: state.authorization
 }), dispatch => ({
-    authorizationAction: bindActionCreators(AuthorizationActions, dispatch)
+  authorizationAction: bindActionCreators(AuthorizationActions, dispatch)
 }))(App);

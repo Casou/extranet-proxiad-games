@@ -145,8 +145,8 @@ const renderRiddleItem = (id, status) => {
     return `
         <li>
             ${ status ?
-                `<i class="fa fa-unlock"/><span class="lock_status unlocked"/>UNLOCKED</span>` :
-                `<i class="fa fa-lock"/><span class="lock_status locked">LOCKED</span>` }
+                `<i class="fa fa-unlock"></i><span class="lock_status unlocked"/>UNLOCKED</span>` :
+                `<i class="fa fa-lock"></i><span class="lock_status locked">LOCKED</span>` }
     
             <span>Riddle [id : ${ id }]</span>
         </li>

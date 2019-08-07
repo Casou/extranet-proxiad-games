@@ -33,7 +33,8 @@ class TerminalDialog extends React.Component {
     historyPosition: null,
     consoleHistory: [],
     canInput: true,
-    terminatorResponse : "...dumb ass...",
+    terminatorResponse: "...dumb ass...",
+    lock: {min: 30, max: 60, step: 10},
     disableTime: localStorage.getItem("terminalDisableTime") ? parseInt(localStorage.getItem("terminalDisableTime")) : null
   };
 
@@ -55,8 +56,8 @@ class TerminalDialog extends React.Component {
   }
 
 
-  componentWillMount() {
-    const url = SERVER_URL + "parametre/TERMINAL_TERMINATOR_COMMAND_RESPONSE";
+  componentDidMount() {
+    const url = SERVER_URL + "parametre";
     axios.get(url)
       .then(response => {
         if (response.status !== 200) {
@@ -66,7 +67,22 @@ class TerminalDialog extends React.Component {
           return response.data;
         }
       })
-      .then((parameter) => this.setState({ terminatorResponse : `<pre>${ parameter.value }</pre>` }));
+      .then((allParameters) => {
+        const {terminatorResponse, lock} = this.state;
+        const newTerminatorResponse = allParameters.find(p => p.key === "TERMINAL_TERMINATOR_COMMAND_RESPONSE") || {value: terminatorResponse};
+        const newMinLockTime = allParameters.find(p => p.key === "TERMINAL_MINIMUM_LOCK_TIME") || {value: lock.min};
+        const newMaxLockTime = allParameters.find(p => p.key === "TERMINAL_MAXIMUM_LOCK_TIME") || {value: lock.max};
+        const newStepLockTime = allParameters.find(p => p.key === "TERMINAL_LOCK_TIME_STEP") || {value: lock.step};
+
+        this.setState({
+          terminatorResponse: `<pre>${newTerminatorResponse.value}</pre>`,
+          lock: {
+            min: parseInt(newMinLockTime.value),
+            max: parseInt(newMaxLockTime.value),
+            step: parseInt(newStepLockTime.value)
+          }
+        })
+      });
   }
 
 
@@ -117,7 +133,7 @@ class TerminalDialog extends React.Component {
     let disableMessage = null;
     if (disableTime) {
       disableMessage =
-        <span id={"lockedTerminal"}><i className="fa fa-lock"/> Locked : {formatDisableTime(disableTime)}</span>;
+        <span id={"lockedTerminal"}><i className="fa fa-lock"></i> Locked : {formatDisableTime(disableTime)}</span>;
     }
 
     return (
@@ -268,9 +284,13 @@ class TerminalDialog extends React.Component {
                 }, commandHistory, true);
 
                 if (postError.status === 400) {
+                  const {lock} = this.state;
+                  console.warn(lock);
+
                   let terminalErrors = (localStorage.getItem("terminalErrors") && parseInt(localStorage.getItem("terminalErrors"))) || 0;
+                  const disableTime = Math.min(parseInt(lock.max), parseInt(lock.min) + parseInt(lock.step) * terminalErrors);
+
                   terminalErrors++;
-                  const disableTime = Math.min(60, 30 + 10 * terminalErrors);
                   localStorage.setItem("terminalDisableTime", disableTime + "");
                   localStorage.setItem("terminalErrors", terminalErrors + "");
                   this.setState({
