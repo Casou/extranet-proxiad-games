@@ -74,7 +74,7 @@ class Portfolio extends React.Component {
     constructor(props) {
         super(props);
 
-        const url = SERVER_URL + "people/all";
+        const url = SERVER_URL + "people";
         axios.get(url)
             .then(response => {
                 if (response.status !== 200) {
