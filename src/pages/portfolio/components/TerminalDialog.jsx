@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import '../style/TerminalDialog.css';
 import Dialog from "@material-ui/core/Dialog/Dialog";
 import {handleCommand, progressbar} from "../action/handleCommand";
-import {lpad, makeid} from "../../../common/common";
+import {lpad, makeCancelable, makeid} from "../../../common/common";
 import connect from "react-redux/es/connect/connect";
 import {assign} from "lodash";
 import {bindActionCreators} from "redux";
@@ -55,10 +55,10 @@ class TerminalDialog extends React.Component {
     }
   }
 
-
   componentDidMount() {
     const url = SERVER_URL + "parametre";
-    axios.get(url)
+    this.loadDatePromise = makeCancelable(
+      axios.get(url)
       .then(response => {
         if (response.status !== 200) {
           console.error(response);
@@ -67,7 +67,11 @@ class TerminalDialog extends React.Component {
           return response.data;
         }
       })
-      .then((allParameters) => {
+    );
+
+    this.loadDatePromise
+      .promise
+      .then(allParameters => {
         const {terminatorResponse, lock} = this.state;
         const newTerminatorResponse = allParameters.find(p => p.key === "TERMINAL_TERMINATOR_COMMAND_RESPONSE") || {value: terminatorResponse};
         const newMinLockTime = allParameters.find(p => p.key === "TERMINAL_MINIMUM_LOCK_TIME") || {value: lock.min};
@@ -82,9 +86,13 @@ class TerminalDialog extends React.Component {
             step: parseInt(newStepLockTime.value)
           }
         })
-      });
+      })
+      .catch(error => console.error(error));
   }
 
+  componentWillUnmount() {
+    this.loadDatePromise && this.loadDatePromise.cancel();
+  }
 
   componentWillReceiveProps(nextProps, nextContext) {
     if (this.props.open !== nextProps.open) {

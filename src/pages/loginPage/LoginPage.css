@@ -36,3 +36,9 @@
     padding : 0 !important;
     width: auto !important;
 }
+
+#log__logo {
+    position : absolute;
+    top : 0;
+    left : 0;
+}

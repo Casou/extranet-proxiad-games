@@ -75,7 +75,7 @@ class LoginPage extends Component {
         const { loginValue, passwordValue } = this.state;
 
         return (
-            <div id={"log"}>
+            <form id={"log"}>
                 <LoginComment text={"Password : glados"} />
 
                 <Paper className={classes.root} elevation={1}>
@@ -84,8 +84,9 @@ class LoginPage extends Component {
                     </h1>
                     <TextField
                         id="userName"
-                        label={"Utilisateur"}
+                        label={"Nom de la salle"}
                         value={loginValue}
+                        autoComplete='off'
                         onChange={(e) => this._handleTextFieldChange(e, "login")}
                         onKeyPress={this._handleTextFieldKeyPress}
                         fullWidth
@@ -94,6 +95,7 @@ class LoginPage extends Component {
                         id="password"
                         label={"Mot de passe"}
                         value={passwordValue}
+                        autoComplete='off'
                         onChange={(e) => this._handleTextFieldChange(e, "password")}
                         onKeyPress={this._handleTextFieldKeyPress}
                         type="password"
@@ -132,7 +134,7 @@ class LoginPage extends Component {
                         </IconButton>,
                     ]}
                 />
-            </div>
+            </form>
         );
     }
 
