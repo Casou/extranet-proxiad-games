@@ -1,7 +1,7 @@
 const AVAILABLE_COMMANDS = [
     { command : "help", description : "List all commands" },
     { command : "unlock", description : "Unlock riddles" },
-    { command : "clean", description : "Erase previous command in the console" },
+    { command : "clean", description : "Erase previous commands in the console" },
     { command : "terminator", description : "Give a root access to the AI on all your computers (you lost half of your remaining time)" },
 ];
 
@@ -115,11 +115,11 @@ const handleUnlock = (args, riddleStoreArray) => {
         returnObject.text =
                 `<ul class="lock_list">
                     ${ riddleStoreArray.riddles.map((riddle) => 
-                        renderRiddleItem(riddle.riddleId, riddle.isResolved)
+                        renderRiddleItem(riddle.riddleId, riddle.resolved)
                     ).join("") }
                 </ul>`
             ;
-        if (!riddleStoreArray.riddles.filter(riddle => !riddle.isResolved).length) {
+        if (!riddleStoreArray.riddles.filter(riddle => !riddle.resolved).length) {
             returnObject.text += `<br/>
                 All riddles unlocked. Type '<span class="redpill">redpill</span>' to infiltrate the AI. 
             `;
